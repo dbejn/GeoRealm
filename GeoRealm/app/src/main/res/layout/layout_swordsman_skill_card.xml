@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/colorSword"
+    app:cardCornerRadius="15dp"
+    android:layout_margin="7dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/choose_character_swordsman_card"
+        android:foreground="@drawable/select">
+
+        <TextView
+            android:id="@+id/skill_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/skill_sample"
+            android:textColor="@color/colorSword"
+            android:textSize="22sp"
+            android:textStyle="bold|italic" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_more_swordsman_skill"
+            android:layout_alignBottom="@+id/skill_name"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_arrow_up"
+            android:background="@android:color/transparent"
+            android:tint="@color/colorSword"
+            android:layout_marginEnd="15dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/skill_name"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/swordsman_skill_gradient">
+
+            <TextView
+                android:id="@+id/skill_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:text="@string/description_sample"
+                android:textColor="@color/colorSword"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:id="@+id/skill_stats"
+                android:layout_below="@+id/skill_description"
+                android:text="@string/stats_sample"
+                android:textColor="@color/colorSword"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:layout_marginBottom="10dp"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

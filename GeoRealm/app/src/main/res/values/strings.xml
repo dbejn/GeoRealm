@@ -1,0 +1,80 @@
+<resources>
+    <string name="app_name">GeoRealm</string>
+    <string name="title_activity_maps">GeoRealm</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_create_character">CreateCharacterActivity</string>
+    <string name="title_activity_account">AccountActivity</string>
+    <string name="title_activity_highscore">HighscoreActivity</string>
+    <string name="title_activity_battle">BattleActivity</string>
+
+    <string name="quit">quit</string>
+    <string name="login">login, fierce warrior</string>
+    <string name="logout">logout</string>
+    <string name="choose_character">choose your character</string>
+    <string name="swordsman">swordsman</string>
+    <string name="sorcerer">sorcerer</string>
+    <string name="rogue">rogue</string>
+    <string name="back">back</string>
+    <string name="play">play</string>
+    <string name="menu">menu</string>
+    <string name="change_character">change character</string>
+    <string name="character">character</string>
+    <string name="account">account</string>
+    <string name="title_activity_character">CharacterActivity</string>
+    <string name="skills">skills</string>
+    <string name="inventory">inventory</string>
+    <string name="create">create</string>
+    <string name="character_name">name</string>
+    <string name="enter_character_name">enter character name</string>
+    <string name="character_class">class</string>
+    <string name="swordsman_class_desc">swordsmen are melee fighters highly trained in the arts of
+        weaponry. they are strong and quick on the battlefield,
+        usually leading the charge.</string>
+    <string name="sorcerer_class_desc">students gifted with a keen intellect and unwavering
+        discipline may walk the path of the sorcerer. sorcerers demolish their
+        foes with arcane incantations.</string>
+    <string name="rogue_class_desc">for rogues, the only code is the contract, and their honor
+        is purchased in gold. rogues often initiate combat with a surprise attack
+        from the shadows.</string>
+    <string name="berserker">berserker</string>
+    <string name="berserker_desc">heavy damage, dual wielding\nlight armor</string>
+    <string name="paladin">paladin</string>
+    <string name="paladin_desc">moderate damage\nheavy armor, healing</string>
+    <string name="level">level</string>
+    <string name="leveling_points">leveling points</string>
+    <string name="experience">, experience</string>
+    <string name="gems_collected">gems collected</string>
+    <string name="diamonds_mined">diamonds mined</string>
+    <string name="monsters_slain">monsters slain</string>
+    <string name="duels_won">duels won</string>
+    <string name="score">score</string>
+    <string name="info">info</string>
+    <string name="characters">characters</string>
+    <string name="friends">friends</string>
+    <string name="best_character">best character</string>
+    <string name="best_character_score">best character score</string>
+    <string name="view_character">view character</string>
+    <string name="delete_character">delete character</string>
+    <string name="view_account">view account</string>
+    <string name="challenge_to_duel">challenge to duel</string>
+    <string name="last_seen">last seen</string>
+    <string name="learn_skill">learn skill</string>
+    <string name="skill_sample">skill sample</string>
+    <string name="description_sample">description sample description sample description \nsample description sample</string>
+    <string name="stats_sample">stats sample\nstats sample</string>
+    <string name="level_1">level 1</string>
+    <string name="level_3">level 3</string>
+    <string name="level_5">level 5</string>
+    <string name="accounts">accounts</string>
+    <string name="highscore">highscore</string>
+    <string name="instructions">instructions</string>
+    <string name="my_account">my account</string>
+    <string name="leave_battle">leave battle (25 gems)</string>
+    <string name="leave_duel">leave duel</string>
+    <string name="vs">VS</string>
+    <string name="health">health</string>
+    <string name="mana">mana</string>
+    <string name="stamina">stamina</string>
+    <string name="items">items</string>
+    <string name="history">history</string>
+</resources>

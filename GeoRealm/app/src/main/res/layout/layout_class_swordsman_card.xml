@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/colorSword"
+    app:cardCornerRadius="15dp"
+    android:layout_margin="7dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/choose_character_swordsman_card">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:src="@drawable/sword"
+            android:tint="@color/colorSword"
+            android:layout_marginStart="200dp"
+            android:layout_marginTop="-50dp"
+            android:scaleX="1"
+            android:scaleY="1"
+            android:rotation="-20"/>
+
+        <TextView
+            android:id="@+id/class_card_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/swordsman"
+            android:textColor="@color/colorSword"
+            android:textSize="22sp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:id="@+id/class_card_info"
+            android:layout_width="190dp"
+            android:layout_height="110dp"
+            android:layout_below="@+id/class_card_name"
+            android:layout_marginStart="10dp"
+            android:text="@string/swordsman_class_desc"
+            android:textColor="@color/colorSword"
+            android:textSize="14sp"
+            android:textStyle="italic"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_more_swordsman_class"
+            android:layout_alignBottom="@+id/class_card_info"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_arrow_up"
+            android:background="@android:color/transparent"
+            android:tint="@color/colorSword"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="15dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@+id/button_more_swordsman_class"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/swordsman_gradient_1"
+                android:foreground="@drawable/select">
+
+                <TextView
+                    android:id="@+id/berserker_class"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/berserker"
+                    android:textColor="@color/colorSword"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/berserker_class"
+                    android:text="@string/berserker_desc"
+                    android:textColor="@color/colorSword"
+                    android:textSize="16sp"
+                    android:textStyle="italic"
+                    android:layout_marginBottom="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/swordsman_gradient_2"
+                android:layout_marginTop="-1dp">
+
+                <TextView
+                    android:id="@+id/paladin_class"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/paladin"
+                    android:textColor="@color/colorBase"
+                    android:textSize="22sp"
+                    android:textStyle="bold|italic"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/paladin_class"
+                    android:text="@string/paladin_desc"
+                    android:textColor="@color/colorBase"
+                    android:textSize="16sp"
+                    android:textStyle="italic"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

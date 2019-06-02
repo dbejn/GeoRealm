@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HighscoreActivity" >
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorTint">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/layout_back">
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/button_back"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_back"
+                android:tint="@color/colorBase"
+                android:tintMode="src_atop"
+                android:scaleX="1.35"
+                android:scaleY="1.35"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/back"
+                android:textColor="@color/colorBase"
+                android:layout_toEndOf="@id/button_back"
+                android:layout_alignBottom="@id/button_back"
+                android:textStyle="italic|bold"
+                android:textSize="12sp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/layout_tabs"
+            android:background="@drawable/bot_rounded_rec_trans"
+            android:orientation="horizontal"
+            android:layout_toEndOf="@+id/layout_back"
+            android:layout_marginStart="15dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tab_button_accounts"
+                    android:text="@string/accounts"
+                    android:textColor="@color/colorBase"
+                    android:textStyle="bold|italic"
+                    android:background="@android:color/transparent"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:id="@+id/tab_marker_accounts"
+                    android:background="@color/colorBase"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:visibility="invisible"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorBase"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tab_button_characters"
+                    android:text="@string/characters"
+                    android:textColor="@color/colorBase"
+                    android:textStyle="italic"
+                    android:background="@android:color/transparent"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:id="@+id/tab_marker_characters"
+                    android:background="@color/colorBase"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/layout_character_info"
+            android:layout_below="@+id/layout_tabs">
+
+            <include layout="@layout/layout_highscore"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

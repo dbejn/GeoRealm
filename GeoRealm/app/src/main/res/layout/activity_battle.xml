@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BattleActivity" >
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorTint">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/layout_back">
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/button_back"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_back"
+                android:tint="@color/colorBase"
+                android:tintMode="src_atop"
+                android:scaleX="1.35"
+                android:scaleY="1.35"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/leave_duel"
+                android:textColor="@color/colorBase"
+                android:layout_toEndOf="@id/button_back"
+                android:layout_alignBottom="@id/button_back"
+                android:textStyle="italic|bold"
+                android:textSize="12sp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/layout_battlefield"
+            android:layout_below="@+id/layout_back"
+            android:layout_margin="20dp"
+            android:background="@drawable/battlefield_card"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="10dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/opponent_1_info">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:id="@+id/opponent_1_icon"
+                            android:src="@drawable/ic_sword"
+                            android:tint="@color/colorBase"
+                            android:layout_centerVertical="true"/>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/opponent_1_icon"
+                            android:layout_marginStart="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_1_name"
+                                android:text="john doe"
+                                android:textStyle="italic|bold"
+                                android:textSize="22sp"
+                                android:textColor="@color/colorBase"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_1_class"
+                                android:text="@string/berserker"
+                                android:textStyle="italic|bold"
+                                android:textSize="16sp"
+                                android:textColor="@color/colorBase"
+                                android:layout_below="@+id/opponent_1_name"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_1_level"
+                                android:layout_toEndOf="@+id/opponent_1_class"
+                                android:layout_below="@+id/opponent_1_name"
+                                android:text=", 4"
+                                android:textStyle="italic|bold"
+                                android:textSize="16sp"
+                                android:textColor="@color/colorBase"/>
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/opponent_1_health"
+                            android:layout_alignParentEnd="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_1_text_health"
+                                android:text="@string/health"
+                                android:textStyle="italic|bold"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorHealth"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_1_health_stat"
+                                android:layout_toEndOf="@+id/opponent_1_text_health"
+                                android:text=" 90/110"
+                                android:textStyle="italic|bold"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorHealth"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/opponent_1_resource"
+                            android:layout_alignParentEnd="true"
+                            android:layout_below="@+id/opponent_1_health">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_1_text_resource"
+                                android:text="@string/stamina"
+                                android:textStyle="italic|bold"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorStamina"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_1_resource_stat"
+                                android:layout_toEndOf="@+id/opponent_1_text_resource"
+                                android:text=" 45/100"
+                                android:textStyle="italic|bold"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorStamina"/>
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/opponent_1_info"
+                    android:layout_marginTop="10dp">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="none"
+                        android:scrollIndicators="top|bottom"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/skills"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold|italic"
+                                    android:textColor="@color/colorBase"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="skill 1"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="skill 2"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="skill 3"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal"
+                                android:layout_marginTop="15dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/items"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold|italic"
+                                    android:textColor="@color/colorBase"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="health potion"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="stamina potion"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </ScrollView>
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="none"
+                        android:scrollIndicators="top|bottom"
+                        android:layout_weight="1"
+                        android:layout_marginStart="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/history"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold|italic"
+                                    android:textColor="@color/colorBase"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="used skill, description"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="14sp"
+                                    android:layout_margin="2dp"
+                                    android:gravity="center"
+                                    android:padding="2dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="used item, description"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="14sp"
+                                    android:layout_margin="2dp"
+                                    android:gravity="center"
+                                    android:padding="2dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="used skill, descriptionnnnnnnn"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="14sp"
+                                    android:layout_margin="2dp"
+                                    android:gravity="center"
+                                    android:padding="2dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="used skill, description"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="14sp"
+                                    android:layout_margin="2dp"
+                                    android:gravity="center"
+                                    android:padding="2dp"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </ScrollView>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_toStartOf="@+id/vs"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/vs"
+                    android:text="@string/vs"
+                    android:textStyle="italic|bold"
+                    android:textSize="22sp"
+                    android:textColor="@color/colorBase"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_toEndOf="@+id/vs"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingBottom="10dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/opponent_2_info"
+                    android:layout_alignParentBottom="true">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/opponent_2_health">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_2_text_health"
+                                android:text="@string/health"
+                                android:textStyle="italic|bold"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorHealth"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_2_health_stat"
+                                android:layout_toEndOf="@+id/opponent_2_text_health"
+                                android:text=" 100/125"
+                                android:textStyle="italic|bold"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorHealth"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/opponent_2_resource"
+                            android:layout_below="@+id/opponent_2_health">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_2_text_resource"
+                                android:text="@string/stamina"
+                                android:textStyle="italic|bold"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorStamina"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_2_resource_stat"
+                                android:layout_toEndOf="@+id/opponent_2_text_resource"
+                                android:text=" 70/100"
+                                android:textStyle="italic|bold"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorStamina"/>
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:id="@+id/opponent_2_icon"
+                            android:src="@drawable/ic_sword"
+                            android:tint="@color/colorBase"
+                            android:layout_centerVertical="true"/>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/opponent_2_icon"
+                            android:layout_marginStart="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_2_name"
+                                android:text="jane doe"
+                                android:textStyle="italic|bold"
+                                android:textSize="22sp"
+                                android:textColor="@color/colorBase"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_2_class"
+                                android:text="@string/paladin"
+                                android:textStyle="italic|bold"
+                                android:textSize="16sp"
+                                android:textColor="@color/colorBase"
+                                android:layout_below="@id/opponent_2_name"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/opponent_2_level"
+                                android:layout_toEndOf="@+id/opponent_2_class"
+                                android:text=", 6"
+                                android:textStyle="italic|bold"
+                                android:textSize="16sp"
+                                android:textColor="@color/colorBase"
+                                android:layout_below="@+id/opponent_2_name"/>
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_above="@+id/opponent_2_info"
+                    android:layout_marginTop="10dp"
+                    android:paddingBottom="10dp">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="none"
+                        android:scrollIndicators="top|bottom"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/history"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold|italic"
+                                    android:textColor="@color/colorBase"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="used skill, description"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="14sp"
+                                    android:layout_margin="2dp"
+                                    android:gravity="center"
+                                    android:padding="2dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="used item, description"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="14sp"
+                                    android:layout_margin="2dp"
+                                    android:gravity="center"
+                                    android:padding="2dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="used skill, descriptionnnnnnnn"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="14sp"
+                                    android:layout_margin="2dp"
+                                    android:gravity="center"
+                                    android:padding="2dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="used skill, description"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="14sp"
+                                    android:layout_margin="2dp"
+                                    android:gravity="center"
+                                    android:padding="2dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="used item, description"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="14sp"
+                                    android:layout_margin="2dp"
+                                    android:gravity="center"
+                                    android:padding="2dp"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </ScrollView>
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="none"
+                        android:scrollIndicators="top|bottom"
+                        android:layout_weight="1"
+                        android:layout_marginStart="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/skills"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold|italic"
+                                    android:textColor="@color/colorBase"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="skill 1"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="skill 2"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="skill 3"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="skill 4"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal"
+                                android:layout_marginTop="15dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/items"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold|italic"
+                                    android:textColor="@color/colorBase"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="health potion"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/highscore_card_gradient"
+                                    android:text="stamina potion"
+                                    android:textColor="@color/colorBase"
+                                    android:textSize="12sp"
+                                    android:layout_margin="2dp"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </ScrollView>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

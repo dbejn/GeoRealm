@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="50dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="110dp"
+        android:layout_marginTop="10dp"
+        android:scrollbars="none"
+        android:scrollIndicators="top|bottom">
+
+        <LinearLayout
+            android:id="@+id/layout_characters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+            <include layout="@layout/layout_friend_card" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/layout_character_options"
+        android:background="@drawable/top_rounded_rec_disabled"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/button_view_account"
+            android:text="@string/view_account"
+            android:textColor="@color/colorBase"
+            android:textStyle="italic"
+            android:background="@android:color/transparent"
+            android:layout_weight="1"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorBase"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/button_challenge"
+            android:text="@string/challenge_to_duel"
+            android:textColor="@color/colorBase"
+            android:textStyle="italic"
+            android:background="@android:color/transparent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

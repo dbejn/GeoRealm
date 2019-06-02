@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "421527487677",
+    "firebase_url": "https://georealm-elfak.firebaseio.com",
+    "project_id": "georealm-elfak",
+    "storage_bucket": "georealm-elfak.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421527487677:android:8f567955941ef3a0",
+        "android_client_info": {
+          "package_name": "com.example.georealm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "421527487677-9srcslu16umis7f5iscc5s8jcka8etmu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.georealm",
+            "certificate_hash": "b32423f8bd8e72c86c36513369fba36bc7aa9c16"
+          }
+        },
+        {
+          "client_id": "421527487677-5c4kvkdmnmm1kr5thm0a3v34cdrbshks.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiUvRVbFpDAq6dcBa477hAlVaeeMNs50o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "421527487677-5c4kvkdmnmm1kr5thm0a3v34cdrbshks.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
