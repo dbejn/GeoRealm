@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/colorSword"
+    app:cardCornerRadius="15dp"
+    android:layout_margin="7dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/character_card_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/choose_character_swordsman_card">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"/>
+
+        <ImageView
+            android:id="@+id/character_card_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sword"
+            android:tint="@color/colorSword"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.75"
+            android:layout_marginTop="5dp"
+            android:rotation="10"/>
+
+        <TextView
+            android:id="@+id/character_card_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:text="milovan"
+            android:textColor="@color/colorSword"
+            android:textSize="22sp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:id="@+id/character_card_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/character_card_name"
+            android:layout_marginStart="10dp"
+            android:text="@string/level_x"
+            android:textColor="@color/colorSword"
+            android:textSize="16sp"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/character_card_subclass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/character_card_level"
+            app:layout_constraintTop_toBottomOf="@id/character_card_name"
+            android:layout_marginStart="5dp"
+            android:text="@string/berserker"
+            android:textColor="@color/colorSword"
+            android:textSize="16sp"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/character_card_class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/swordsman"
+            android:textColor="@color/colorSword"
+            android:textSize="16sp"
+            android:textStyle="bold|italic"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

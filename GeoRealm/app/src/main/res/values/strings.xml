@@ -6,11 +6,13 @@
     <string name="title_activity_account">AccountActivity</string>
     <string name="title_activity_highscore">HighscoreActivity</string>
     <string name="title_activity_battle">BattleActivity</string>
+    <string name="title_activity_choose_character">ChooseCharacter</string>
 
     <string name="quit">quit</string>
     <string name="login">login, fierce warrior</string>
     <string name="logout">logout</string>
     <string name="choose_character">choose your character</string>
+    <string name="no_character_info">you do not have any created characters\nclick the + button to create one</string>
     <string name="swordsman">swordsman</string>
     <string name="sorcerer">sorcerer</string>
     <string name="rogue">rogue</string>
@@ -37,10 +39,19 @@
         is purchased in gold. rogues often initiate combat with a surprise attack
         from the shadows.</string>
     <string name="berserker">berserker</string>
-    <string name="berserker_desc">heavy damage, dual wielding\nlight armor</string>
+    <string name="berserker_desc">moderate damage, dual wielding\nmoderate armor</string>
     <string name="paladin">paladin</string>
-    <string name="paladin_desc">moderate damage\nheavy armor, healing</string>
+    <string name="paladin_desc">low damage\nheavy armor\nhealing, moderate crowd control</string>
+    <string name="icebound">icebound</string>
+    <string name="icebound_desc">moderate damage\nmoderate armor\nheavy crowd control</string>
+    <string name="pyromancer">pyromancer</string>
+    <string name="pyromancer_desc">heavy damage, damage over time\nlow armor</string>
+    <string name="shadow">shadow</string>
+    <string name="shadow_desc">moderate damage, damage over time\nlow armor\ninvisibility</string>
+    <string name="assassin">assassin</string>
+    <string name="assassin_desc">heavy damage\nlow armor\nexecution</string>
     <string name="level">level</string>
+    <string name="level_x">level %1$d,</string>
     <string name="leveling_points">leveling points</string>
     <string name="experience">, experience</string>
     <string name="gems_collected">gems collected</string>

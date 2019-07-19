@@ -22,11 +22,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/layout_character_swordsman_card" />
-
-            <include layout="@layout/layout_character_sorcerer_card" />
-
-            <include layout="@layout/layout_character_rogue_card" />
+            <include layout="@layout/layout_character_card" />
 
         </LinearLayout>
 

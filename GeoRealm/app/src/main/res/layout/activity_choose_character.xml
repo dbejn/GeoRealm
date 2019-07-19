@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".GameStartActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ChooseCharacterActivity">
 
     <fragment
         android:id="@+id/map"
@@ -19,6 +19,6 @@
         android:layout_height="match_parent"
         android:background="@color/colorTint"/>
 
-    <include layout="@layout/layout_main_menu" />
+    <include layout="@layout/layout_choose_character" />
 
 </FrameLayout>

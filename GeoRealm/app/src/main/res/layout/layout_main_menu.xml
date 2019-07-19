@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_main_menu"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp">
 
         <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/button_quit"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_quit"
-            android:tint="@color/colorBase"
-            android:tintMode="src_atop"
-            android:scaleX="1.25"
-            android:scaleY="1.25"/>
+            android:tint="@color/colorBase"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,30 +28,28 @@
             android:textColor="@color/colorBase"
             android:layout_toEndOf="@id/button_quit"
             android:layout_alignBottom="@id/button_quit"
+            android:layout_marginStart="7dp"
             android:textStyle="italic|bold"
-            android:textSize="12sp"/>
+            android:textSize="14sp"/>
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="100dp"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/layout_logout"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp">
 
         <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/button_logout"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_logout_arrow"
             android:tint="@color/colorBase"
-            android:tintMode="src_atop"
-            android:scaleX="1.25"
-            android:scaleY="1.25"
             android:layout_alignParentEnd="true"/>
 
         <TextView
@@ -64,16 +59,25 @@
             android:textColor="@color/colorBase"
             android:layout_toStartOf="@id/button_logout"
             android:layout_alignBottom="@id/button_logout"
+            android:layout_marginEnd="7dp"
             android:textStyle="italic|bold"
-            android:textSize="12sp"/>
+            android:textSize="14sp"/>
 
     </RelativeLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         android:id="@+id/geo_realm_label">
 
         <TextView
@@ -122,9 +126,10 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="175dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
@@ -136,19 +141,16 @@
             android:background="@drawable/rounded_rec_base"
             android:paddingStart="20dp"
             android:paddingEnd="25dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp">
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/button_login"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_key"
-                android:tint="@color/colorPrimary"
-                android:tintMode="src_atop"
-                android:scaleX="1.25"
-                android:scaleY="1.25"/>
+                android:tint="@color/colorPrimary"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -157,34 +159,30 @@
                 android:textColor="@color/colorPrimary"
                 android:layout_toEndOf="@id/button_login"
                 android:layout_alignBottom="@id/button_login"
+                android:layout_marginStart="7dp"
                 android:textStyle="italic|bold"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@+id/layout_highscore"
             android:layout_marginBottom="15dp"
             android:id="@+id/layout_select_character"
             android:background="@drawable/rounded_rec_base"
             android:paddingStart="20dp"
             android:paddingEnd="25dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp">
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/button_select_character"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_select"
                 android:tint="@color/colorPrimary"
-                android:tintMode="src_atop"
-                android:scaleX="1.5"
-                android:scaleY="1.5"
                 android:rotation="-30"/>
 
             <TextView
@@ -194,34 +192,30 @@
                 android:textColor="@color/colorPrimary"
                 android:layout_toEndOf="@id/button_select_character"
                 android:layout_alignBottom="@id/button_select_character"
+                android:layout_marginStart="7dp"
                 android:textStyle="italic|bold"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@+id/layout_instructions"
             android:layout_marginBottom="15dp"
             android:id="@+id/layout_my_account"
             android:background="@drawable/rounded_rec_base"
             android:paddingStart="20dp"
             android:paddingEnd="25dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp">
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/button_my_account"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_account"
-                android:tint="@color/colorPrimary"
-                android:tintMode="src_atop"
-                android:scaleX="1.5"
-                android:scaleY="1.5"/>
+                android:tint="@color/colorPrimary"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -230,8 +224,9 @@
                 android:textColor="@color/colorPrimary"
                 android:layout_toEndOf="@id/button_my_account"
                 android:layout_alignBottom="@id/button_my_account"
+                android:layout_marginStart="7dp"
                 android:textStyle="italic|bold"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         </RelativeLayout>
 
@@ -243,19 +238,16 @@
             android:background="@drawable/rounded_rec_base"
             android:paddingStart="20dp"
             android:paddingEnd="25dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp">
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/button_highscore"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_highscore"
-                android:tint="@color/colorPrimary"
-                android:tintMode="src_atop"
-                android:scaleX="1.5"
-                android:scaleY="1.5"/>
+                android:tint="@color/colorPrimary"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -264,8 +256,9 @@
                 android:textColor="@color/colorPrimary"
                 android:layout_toEndOf="@id/button_highscore"
                 android:layout_alignBottom="@id/button_highscore"
+                android:layout_marginStart="7dp"
                 android:textStyle="italic|bold"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         </RelativeLayout>
 
@@ -276,19 +269,16 @@
             android:background="@drawable/rounded_rec_base"
             android:paddingStart="20dp"
             android:paddingEnd="25dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp">
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/button_instructions"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_instructions"
-                android:tint="@color/colorPrimary"
-                android:tintMode="src_atop"
-                android:scaleX="1.5"
-                android:scaleY="1.5"/>
+                android:tint="@color/colorPrimary"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -297,11 +287,12 @@
                 android:textColor="@color/colorPrimary"
                 android:layout_toEndOf="@id/button_instructions"
                 android:layout_alignBottom="@id/button_instructions"
+                android:layout_marginStart="7dp"
                 android:textStyle="italic|bold"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         </RelativeLayout>
 
     </LinearLayout>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

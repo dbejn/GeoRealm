@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_choose_character"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp">
 
         <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/button_back"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_back"
-            android:tint="@color/colorBase"
-            android:tintMode="src_atop"
-            android:scaleX="1.35"
-            android:scaleY="1.35"/>
+            android:tint="@color/colorBase"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,52 +28,59 @@
             android:textColor="@color/colorBase"
             android:layout_toEndOf="@id/button_back"
             android:layout_alignBottom="@id/button_back"
+            android:layout_marginStart="7dp"
             android:textStyle="italic|bold"
-            android:textSize="12sp"/>
+            android:textSize="14sp"/>
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="100dp"
+        android:layout_width="85dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="10dp"
-        android:id="@+id/layout_logout"
-        android:background="@drawable/left_rounded_rec_base"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        android:id="@+id/layout_play"
+        android:background="@drawable/left_rounded_rec_disabled"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp">
 
         <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/button_play"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_play"
             android:tint="@color/colorPrimary"
-            android:tintMode="src_atop"
-            android:scaleX="1.3"
-            android:scaleY="1.3"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="5dp"/>
+            android:layout_marginEnd="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/play"
             android:textColor="@color/colorPrimary"
-            android:layout_toLeftOf="@id/button_play"
+            android:layout_toStartOf="@id/button_play"
             android:layout_alignBottom="@id/button_play"
+            android:layout_marginEnd="7dp"
             android:textStyle="italic|bold"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
 
     </RelativeLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
         android:id="@+id/geo_realm_label">
 
         <TextView
@@ -123,36 +126,35 @@
 
     </RelativeLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginRight="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginBottom="60dp"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_characters_info"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        android:text="@string/no_character_info"
+        android:textStyle="italic"
+        android:textSize="14sp"
+        android:textColor="@color/colorBase"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/character_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginTop="75dp"
-        android:scrollbars="none"
-        android:scrollIndicators="top|bottom"
-        android:layout_below="@+id/geo_realm_label">
+        android:layout_marginBottom="48dp">
 
-        <LinearLayout
-            android:id="@+id/layout_characters"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/layout_character_swordsman_card" />
-
-            <include layout="@layout/layout_character_sorcerer_card" />
-
-            <include layout="@layout/layout_character_rogue_card" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="30dp"/>
-
-        </LinearLayout>
-
-    </ScrollView>
+    </android.support.v7.widget.RecyclerView>
 
     <ImageButton
         android:layout_width="45dp"
@@ -161,8 +163,9 @@
         android:src="@drawable/ic_add"
         android:background="@drawable/circular_button"
         android:tint="@color/colorPrimary"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="37dp"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="25dp"/>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

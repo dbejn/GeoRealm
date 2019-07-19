@@ -31,11 +31,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameStartActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -57,13 +65,8 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
     private AlertDialog.Builder dialog_builder;
     private ImageButton button_quit;
     private DialogInterface.OnClickListener quit_dialog_click_listener;
-    private RelativeLayout layout_main_menu;
-    private RelativeLayout layout_choose_character;
     private RelativeLayout layout_select_character;
     private RelativeLayout layout_my_account;
-    private ImageButton button_play;
-    private ImageButton button_back;
-    private ImageButton button_create;
     private ImageButton button_select_character;
     private ImageButton button_my_account;
     private ImageButton button_highscore;
@@ -76,6 +79,10 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
     private ImageButton button_login;
     private ImageButton button_logout;
     FirebaseUser user;
+    String user_id_token;
+
+    // FIRESTORE
+    FirebaseFirestore database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +102,9 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // FIRESTORE
+        database = FirebaseFirestore.getInstance();
 
         // UI
         dialog_builder = new AlertDialog.Builder(GameStartActivity.this);
@@ -130,52 +140,17 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
-        layout_main_menu = findViewById(R.id.layout_main_menu);
-        layout_choose_character = findViewById(R.id.layout_choose_character);
         layout_select_character = findViewById(R.id.layout_select_character);
         layout_my_account = findViewById(R.id.layout_my_account);
-
-        button_back = findViewById(R.id.button_back);
-        button_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                layout_choose_character.setVisibility(View.GONE);
-                layout_main_menu.setVisibility(View.VISIBLE);
-            }
-        });
-
-        button_play = findViewById(R.id.button_play);
-        button_play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Toast.makeText(getApplicationContext(), "play", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(GameStartActivity.this,
-                        GameActivity.class);
-
-                startActivity(intent);
-            }
-        });
-
-        button_create = findViewById(R.id.button_create);
-        button_create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Toast.makeText(getApplicationContext(), "create", Toast.LENGTH_LONG).show();
-
-                Intent intent = new Intent(GameStartActivity.this, CreateCharacterActivity.class);
-                startActivity(intent);
-            }
-        });
 
         button_select_character = findViewById(R.id.button_select_character);
         button_select_character.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                chooseCharacter();
+                Intent intent = new Intent(GameStartActivity.this, ChooseCharacterActivity.class);
+                intent.putExtra("user_id_token", user_id_token);
+                startActivity(intent);
             }
         });
 
@@ -231,7 +206,7 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
                 Toast.makeText(getApplicationContext(), " logging out",
                         Toast.LENGTH_LONG).show();
 
-                final String user_email = user.getEmail();
+                final String username = user.getDisplayName();
 
                 AuthUI.getInstance()
                         .signOut(getApplicationContext())
@@ -240,10 +215,13 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
                             public void onComplete(@NonNull Task<Void> task) {
 
                                 Toast.makeText(getApplicationContext(),
-                                        user_email + " logged out",
+                                        username + " logged out",
                                         Toast.LENGTH_LONG).show();
 
                                 updateUI(null);
+
+                                user = null;
+                                user_id_token = "";
                             }
                         });
             }
@@ -251,6 +229,7 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
 
         // UI
         user = FirebaseAuth.getInstance().getCurrentUser();
+        getUserFromDatabase();
         updateUI(user);
     }
 
@@ -402,8 +381,6 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
 
         if (user == null) {
 
-            layout_main_menu.setVisibility(View.VISIBLE);
-            layout_choose_character.setVisibility(View.GONE);
             layout_my_account.setVisibility(View.GONE);
             layout_logout.setVisibility(View.GONE);
             layout_select_character.setVisibility(View.GONE);
@@ -411,15 +388,10 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
         }
         else {
 
-            layout_main_menu.setVisibility(View.VISIBLE);
-            layout_choose_character.setVisibility(View.GONE);
             layout_login.setVisibility(View.GONE);
             layout_select_character.setVisibility(View.VISIBLE);
             layout_my_account.setVisibility(View.VISIBLE);
             layout_logout.setVisibility(View.VISIBLE);
-
-            Toast.makeText(getApplicationContext(), "welcome " + user.getEmail(),
-                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -440,15 +412,74 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
                 // Toast.makeText(getApplicationContext(), "welcome " + user.getEmail(),
                 //         Toast.LENGTH_LONG).show();
 
+                getUserFromDatabase();
                 updateUI(user);
-
-                chooseCharacter();
             }
             else {
 
                 Toast.makeText(getApplicationContext(), "login failed",
                         Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private void getUserFromDatabase() {
+
+        if (user != null) {
+
+            user.getIdToken(false).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
+                @Override
+                public void onSuccess(GetTokenResult getTokenResult) {
+
+                    user_id_token = getTokenResult.getToken();
+                    user_id_token = user_id_token.substring(0, 100);
+
+                    DocumentReference user_ref = database.collection("users").document(user_id_token);
+                    user_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                            if (task.isSuccessful()) {
+
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+
+                                    String username = document.getString("username");
+                                    Toast.makeText(GameStartActivity.this, "Welcome " + username, Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+
+                                    Map<String, Object> user_document = new HashMap<>();
+                                    user_document.put("email", user.getEmail());
+                                    user_document.put("username", user.getDisplayName());
+
+                                    database.collection("users").document(user_id_token).set(user_document)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+
+                                                    String username = user.getDisplayName();
+                                                    Toast.makeText(GameStartActivity.this, "Welcome " + username +
+                                                            ". You can change username in the My Account options", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+
+                                                    Toast.makeText(GameStartActivity.this, "Failed to create user document", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+                            }
+                            else {
+
+                                Toast.makeText(GameStartActivity.this, "Failed to get user document", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -493,14 +524,5 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
 
         // Toast.makeText(getApplicationContext(), "on destroy", Toast.LENGTH_LONG).show();
         super.onDestroy();
-    }
-
-    private void chooseCharacter() {
-
-        // get characters from firestore
-        // if no characters => message
-
-        layout_main_menu.setVisibility(View.GONE);
-        layout_choose_character.setVisibility(View.VISIBLE);
     }
 }

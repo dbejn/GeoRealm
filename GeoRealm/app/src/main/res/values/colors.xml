@@ -3,7 +3,7 @@
     <color name="colorPrimary">#384D3E</color>
     <color name="colorPrimaryDark">#212D24</color>
     <color name="colorAccent">#384D3E</color>
-    <color name="colorTint">#E6384D3E</color>
+    <color name="colorTint">#CC384D3E</color>
     <color name="colorBase">#EBE3CD</color>
     <color name="colorLightGrey">#80636363</color>
 
@@ -14,4 +14,6 @@
     <color name="colorHealth">#FF2A00</color>
     <color name="colorMana">#7099CC</color>
     <color name="colorStamina">#FF8000</color>
+
+    <color name="colorDelete">#A82525</color>
 </resources>
