@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#384D3E</color>
-    <color name="colorPrimaryDark">#212D24</color>
-    <color name="colorAccent">#384D3E</color>
-    <color name="colorTint">#CC384D3E</color>
+    <color name="colorPrimary">#8C6532</color>
+    <color name="colorPrimaryDark">#5E4019</color>
+    <color name="colorAccent">#8C6532</color>
+    <color name="colorTint">#B38C6532</color>
     <color name="colorBase">#EBE3CD</color>
     <color name="colorLightGrey">#80636363</color>
+    <color name="colorDisabled">#222222</color>
 
-    <color name="colorSword">#7F4B2C</color>
+    <color name="colorSword">#8F4B2C</color>
     <color name="colorHat">#375156</color>
     <color name="colorDagger">#585E3D</color>
 

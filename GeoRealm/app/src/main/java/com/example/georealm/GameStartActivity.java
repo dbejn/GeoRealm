@@ -15,10 +15,13 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.georealm.helper.Constants;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.common.Scopes;
@@ -45,15 +48,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.georealm.helper.Constants.DEFAULT_ZOOM;
+
 public class GameStartActivity extends FragmentActivity implements OnMapReadyCallback {
 
     // MAPS
     private GoogleMap map;
+    private double latitude;
+    private double longitude;
 
     private FusedLocationProviderClient fused_location_provider_client;
 
     private final LatLng default_location = new LatLng(-33.8523341, 151.2106085);
-    private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean location_permission_granted;
 
@@ -63,23 +69,21 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
 
     // UI
     private AlertDialog.Builder dialog_builder;
-    private ImageButton button_quit;
+    private Button button_quit;
     private DialogInterface.OnClickListener quit_dialog_click_listener;
-    private RelativeLayout layout_select_character;
-    private RelativeLayout layout_my_account;
-    private ImageButton button_select_character;
-    private ImageButton button_my_account;
-    private ImageButton button_highscore;
+    private Button button_select_character;
+    private Button button_my_account;
+    private Button button_highscore;
+    private Button button_instructions;
+    private ProgressBar progress_bar;
 
     // LOGIN
-    private static final int RC_SIGN_IN = 123;
+    private static final int LOGIN_REQUEST = 1;
 
-    private RelativeLayout layout_login;
-    private RelativeLayout layout_logout;
-    private ImageButton button_login;
-    private ImageButton button_logout;
-    FirebaseUser user;
-    String user_id_token;
+    private Button button_login;
+    private Button button_logout;
+    private FirebaseAuth authentication;
+    private FirebaseUser user;
 
     // FIRESTORE
     FirebaseFirestore database;
@@ -95,6 +99,7 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
 
         setContentView(R.layout.activity_game_start);
 
+
         // MAPS
         fused_location_provider_client = LocationServices
                 .getFusedLocationProviderClient(this);
@@ -103,10 +108,18 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
+        // FIREBASE AUTH
+        authentication = FirebaseAuth.getInstance();
+
+
         // FIRESTORE
         database = FirebaseFirestore.getInstance();
 
+
         // UI
+        progress_bar = findViewById(R.id.progress_bar);
+
         dialog_builder = new AlertDialog.Builder(GameStartActivity.this);
         quit_dialog_click_listener = new DialogInterface.OnClickListener() {
             @Override
@@ -140,16 +153,15 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
-        layout_select_character = findViewById(R.id.layout_select_character);
-        layout_my_account = findViewById(R.id.layout_my_account);
-
         button_select_character = findViewById(R.id.button_select_character);
         button_select_character.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent intent = new Intent(GameStartActivity.this, ChooseCharacterActivity.class);
-                intent.putExtra("user_id_token", user_id_token);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("username", user.getDisplayName());
                 startActivity(intent);
             }
         });
@@ -159,9 +171,10 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onClick(View v) {
 
-                // Toast.makeText(getApplicationContext(), "my account", Toast.LENGTH_LONG).show();
-
                 Intent intent = new Intent(GameStartActivity.this, AccountActivity.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("username", user.getDisplayName());
                 startActivity(intent);
             }
         });
@@ -171,40 +184,35 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onClick(View v) {
 
-                // Toast.makeText(getApplicationContext(), "highscore", Toast.LENGTH_LONG).show();
-
                 Intent intent = new Intent(GameStartActivity.this, HighscoreActivity.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("username", user.getDisplayName());
                 startActivity(intent);
             }
         });
 
+
         // LOGIN
-        layout_login = findViewById(R.id.layout_login);
         button_login = findViewById(R.id.button_login);
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.GoogleBuilder()
-                        .setScopes(Arrays.asList(Scopes.PROFILE))
-                        .build();
-
-                startActivityForResult(
-                        AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setAvailableProviders(Arrays.asList(googleIdp))
-                                .build(), RC_SIGN_IN);
+                Intent intent = new Intent(GameStartActivity.this, LoginActivity.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                startActivityForResult(intent, LOGIN_REQUEST);
             }
         });
 
         button_logout = findViewById(R.id.button_logout);
-        layout_logout = findViewById(R.id.layout_logout);
         button_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(getApplicationContext(), " logging out",
-                        Toast.LENGTH_LONG).show();
+                progress_bar.setVisibility(View.VISIBLE);
+                enableCommands(false);
 
                 final String username = user.getDisplayName();
 
@@ -218,19 +226,21 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
                                         username + " logged out",
                                         Toast.LENGTH_LONG).show();
 
+                                user = null;
                                 updateUI(null);
 
-                                user = null;
-                                user_id_token = "";
+                                progress_bar.setVisibility(View.INVISIBLE);
+                                enableCommands(true);
                             }
                         });
             }
         });
 
+        button_instructions = findViewById(R.id.button_instructions);
+
+
         // UI
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        getUserFromDatabase();
-        updateUI(user);
+        setupUser();
     }
 
     // MAPS
@@ -282,11 +292,18 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(last_known_location.getLatitude(),
                                             last_known_location.getLongitude()), DEFAULT_ZOOM));
-                        } else {
+
+                            latitude = last_known_location.getLatitude();
+                            longitude = last_known_location.getLongitude();
+                        }
+                        else {
 
                             map.moveCamera(CameraUpdateFactory
                                     .newLatLngZoom(default_location, DEFAULT_ZOOM));
                             map.getUiSettings().setMyLocationButtonEnabled(false);
+
+                            latitude = default_location.latitude;
+                            longitude = default_location.longitude;
                         }
                     }
                 });
@@ -379,19 +396,19 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
 
     private void updateUI(FirebaseUser user) {
 
-        if (user == null) {
+        if (user == null || user.getDisplayName() == null) {
 
-            layout_my_account.setVisibility(View.GONE);
-            layout_logout.setVisibility(View.GONE);
-            layout_select_character.setVisibility(View.GONE);
-            layout_login.setVisibility(View.VISIBLE);
+            button_my_account.setVisibility(View.GONE);
+            button_logout.setVisibility(View.GONE);
+            button_select_character.setVisibility(View.GONE);
+            button_login.setVisibility(View.VISIBLE);
         }
         else {
 
-            layout_login.setVisibility(View.GONE);
-            layout_select_character.setVisibility(View.VISIBLE);
-            layout_my_account.setVisibility(View.VISIBLE);
-            layout_logout.setVisibility(View.VISIBLE);
+            button_login.setVisibility(View.GONE);
+            button_select_character.setVisibility(View.VISIBLE);
+            button_my_account.setVisibility(View.VISIBLE);
+            button_logout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -401,86 +418,118 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN) {
-
-            IdpResponse response = IdpResponse.fromResultIntent(data);
+        if (requestCode == LOGIN_REQUEST) {
 
             if (resultCode == RESULT_OK) {
 
-                user = FirebaseAuth.getInstance().getCurrentUser();
-
-                // Toast.makeText(getApplicationContext(), "welcome " + user.getEmail(),
-                //         Toast.LENGTH_LONG).show();
-
-                getUserFromDatabase();
-                updateUI(user);
-            }
-            else {
-
-                Toast.makeText(getApplicationContext(), "login failed",
-                        Toast.LENGTH_LONG).show();
+                setupUser();
             }
         }
     }
 
-    private void getUserFromDatabase() {
+    private void setupUser() {
+
+        progress_bar.setVisibility(View.VISIBLE);
+        enableCommands(false);
+
+        user = authentication.getCurrentUser();
 
         if (user != null) {
 
-            user.getIdToken(false).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
-                @Override
-                public void onSuccess(GetTokenResult getTokenResult) {
+            if (user.getDisplayName() != null) {
 
-                    user_id_token = getTokenResult.getToken();
-                    user_id_token = user_id_token.substring(0, 100);
+                DocumentReference user_ref = database.collection("users").document(user.getDisplayName());
+                user_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                    DocumentReference user_ref = database.collection("users").document(user_id_token);
-                    user_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
 
-                            if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
 
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
+                                Toast.makeText(GameStartActivity.this, "Welcome " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
 
-                                    String username = document.getString("username");
-                                    Toast.makeText(GameStartActivity.this, "Welcome " + username, Toast.LENGTH_SHORT).show();
-                                }
-                                else {
+                                updateUI(user);
 
-                                    Map<String, Object> user_document = new HashMap<>();
-                                    user_document.put("email", user.getEmail());
-                                    user_document.put("username", user.getDisplayName());
-
-                                    database.collection("users").document(user_id_token).set(user_document)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-
-                                                    String username = user.getDisplayName();
-                                                    Toast.makeText(GameStartActivity.this, "Welcome " + username +
-                                                            ". You can change username in the My Account options", Toast.LENGTH_SHORT).show();
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-
-                                                    Toast.makeText(GameStartActivity.this, "Failed to create user document", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                }
+                                progress_bar.setVisibility(View.GONE);
+                                enableCommands(true);
                             }
                             else {
 
-                                Toast.makeText(GameStartActivity.this, "Failed to get user document", Toast.LENGTH_SHORT).show();
+                                Map<String, Object> user_document = new HashMap<>();
+                                user_document.put("score", 0);
+
+                                database.collection("users").document(user.getDisplayName()).set(user_document)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+
+                                                Toast.makeText(GameStartActivity.this,
+                                                        "Account successfully created. Welcome " + user.getDisplayName(),
+                                                        Toast.LENGTH_SHORT).show();
+
+                                                updateUI(user);
+
+                                                progress_bar.setVisibility(View.GONE);
+                                                enableCommands(true);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+
+                                                Toast.makeText(GameStartActivity.this, "Failed to create user document", Toast.LENGTH_SHORT).show();
+
+                                                updateUI(user);
+
+                                                progress_bar.setVisibility(View.GONE);
+                                                enableCommands(true);
+                                            }
+                                        });
                             }
                         }
-                    });
-                }
-            });
+                        else {
+
+                            Toast.makeText(GameStartActivity.this, "Failed to get user document", Toast.LENGTH_SHORT).show();
+
+                            updateUI(user);
+
+                            progress_bar.setVisibility(View.GONE);
+                            enableCommands(true);
+                        }
+                    }
+                });
+            }
+            else {
+
+                Toast.makeText(GameStartActivity.this,
+                        "No username", Toast.LENGTH_SHORT).show();
+
+                progress_bar.setVisibility(View.GONE);
+                enableCommands(true);
+
+                // otvori activity za promenu username-a
+            }
         }
+        else {
+
+            updateUI(null);
+
+            progress_bar.setVisibility(View.GONE);
+            enableCommands(true);
+        }
+    }
+
+    private void enableCommands(boolean enable) {
+
+        button_login.setEnabled(enable);
+        button_logout.setEnabled(enable);
+        button_my_account.setEnabled(enable);
+        button_select_character.setEnabled(enable);
+        button_highscore.setEnabled(enable);
+        button_quit.setEnabled(enable);
+        button_instructions.setEnabled(enable);
     }
 
     // LIFE CYCLE

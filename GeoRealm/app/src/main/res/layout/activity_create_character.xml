@@ -19,68 +19,41 @@
         android:layout_height="match_parent"
         android:background="@color/colorTint">
 
-        <RelativeLayout
+        <Button
+            android:id="@+id/button_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            map:layout_constraintLeft_toLeftOf="parent"
-            map:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp">
+            android:layout_height="40dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="3dp"
+            android:text="@string/back"
+            android:textSize="12sp"
+            android:textStyle="italic|bold"
+            android:textColor="@color/colorBase"
+            android:drawableStart="@drawable/ic_back"
+            android:drawableTint="@color/colorBase"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:drawablePadding="5dp"/>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/button_back"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_back"
-                android:tint="@color/colorBase"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/back"
-                android:textColor="@color/colorBase"
-                android:layout_toEndOf="@id/button_back"
-                android:layout_alignBottom="@id/button_back"
-                android:layout_marginStart="7dp"
-                android:textStyle="italic|bold"
-                android:textSize="14sp"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="95dp"
-            android:layout_height="wrap_content"
-            map:layout_constraintRight_toRightOf="parent"
-            map:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="10dp"
-            android:id="@+id/layout_create"
+        <Button
+            android:id="@+id/button_create"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="3dp"
+            android:text="@string/create"
+            android:textSize="12sp"
+            android:textStyle="italic|bold"
+            android:textColor="@color/colorPrimary"
+            android:drawableEnd="@drawable/ic_add"
+            android:drawableTint="@color/colorPrimary"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:background="@drawable/left_rounded_rec_disabled"
-            android:paddingTop="7dp"
-            android:paddingBottom="7dp"> <!-- left_rounded_rec_base -->
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/button_create"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_add"
-                android:tint="@color/colorPrimary"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="5dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/create"
-                android:textColor="@color/colorPrimary"
-                android:layout_toStartOf="@id/button_create"
-                android:layout_alignBottom="@id/button_create"
-                android:layout_marginEnd="7dp"
-                android:textStyle="italic|bold"
-                android:textSize="14sp"/>
-
-        </RelativeLayout>
+            android:paddingEnd="7dp"
+            android:paddingStart="15dp"
+            android:drawablePadding="7dp"
+            android:enabled="false"/>
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline"
@@ -97,8 +70,8 @@
             map:layout_constraintTop_toTopOf="parent"
             map:layout_constraintRight_toRightOf="parent"
             map:layout_constraintBottom_toTopOf="@id/guideline"
-            android:layout_marginStart="100dp"
-            android:layout_marginEnd="100dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
             android:textColor="@color/colorBase"
             android:textSize="18sp"
             android:textStyle="italic|bold"
@@ -107,9 +80,12 @@
             android:gravity="center"
             android:inputType="text"
             android:maxLines="1"
-            android:maxLength="16"/>
+            android:maxLength="16"
+            android:background="@drawable/edit_text_background"
+            android:padding="10dp"
+            android:textCursorDrawable="@color/colorBase"/>
 
-        <TextView
+        <!--<TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/label_name"
@@ -119,7 +95,7 @@
             android:textStyle="italic|bold"
             map:layout_constraintRight_toLeftOf="@+id/edit_character_name"
             map:layout_constraintTop_toTopOf="@+id/edit_character_name"
-            android:layout_marginEnd="15dp"/>
+            android:layout_marginEnd="15dp"/>-->
 
         <TextView
             android:layout_width="wrap_content"
@@ -129,7 +105,7 @@
             android:textSize="16sp"
             android:textStyle="italic|bold"
             map:layout_constraintBottom_toTopOf="@+id/scroll"
-            map:layout_constraintLeft_toLeftOf="@+id/label_name"
+            map:layout_constraintLeft_toLeftOf="@id/scroll"
             android:layout_marginBottom="7dp"/>
 
         <ScrollView
@@ -139,10 +115,10 @@
             map:layout_constraintLeft_toLeftOf="parent"
             map:layout_constraintRight_toRightOf="parent"
             map:layout_constraintTop_toBottomOf="@id/guideline"
-            map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintBottom_toTopOf="@id/progress_bar"
             android:layout_marginRight="25dp"
             android:layout_marginLeft="25dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"
             android:scrollbars="none"
             android:scrollIndicators="top|bottom">
@@ -162,6 +138,16 @@
             </LinearLayout>
 
         </ScrollView>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            map:layout_constraintLeft_toLeftOf="parent"
+            map:layout_constraintBottom_toBottomOf="parent"
+            android:layout_margin="5dp"
+            android:indeterminateTint="@color/colorBase"
+            android:visibility="invisible"/>
 
     </android.support.constraint.ConstraintLayout>
 

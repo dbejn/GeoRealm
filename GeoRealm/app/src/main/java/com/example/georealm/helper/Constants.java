@@ -13,4 +13,7 @@ public class Constants {
     public static final int ROGUE = 6;
     public static final int ASSASSIN = 7;
     public static final int SHADOW = 8;
+
+    public static final float DEFAULT_ZOOM = 16.0f;
+    public static final float MIN_ZOOM = 14.5f;
 }

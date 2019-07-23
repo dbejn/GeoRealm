@@ -2,6 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,12 +14,169 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <View
-        android:id="@+id/activity_game_tint"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorTint"/>
+        android:background="@color/colorTint">
 
-    <include layout="@layout/layout_choose_character" />
+        <Button
+            android:id="@+id/button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="3dp"
+            android:text="@string/back"
+            android:textSize="12sp"
+            android:textStyle="italic|bold"
+            android:textColor="@color/colorBase"
+            android:drawableStart="@drawable/ic_back"
+            android:drawableTint="@color/colorBase"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:drawablePadding="5dp"/>
+
+        <Button
+            android:id="@+id/button_play"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="3dp"
+            android:text="@string/play"
+            android:textSize="12sp"
+            android:textStyle="italic|bold"
+            android:textColor="@color/colorPrimary"
+            android:drawableEnd="@drawable/ic_play"
+            android:drawableTint="@color/colorPrimary"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:background="@drawable/left_rounded_rec_disabled"
+            android:paddingEnd="7dp"
+            android:paddingStart="10dp"
+            android:enabled="false"/>
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            android:id="@+id/geo_realm_label">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Geo"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="50sp"
+                android:fontFamily="monospace"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/geo_label"
+                android:text="Geo"
+                android:textColor="@color/colorBase"
+                android:textSize="50sp"
+                android:fontFamily="monospace"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Realm"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="70sp"
+                android:fontFamily="casual"
+                android:layout_toEndOf="@+id/geo_label"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="2dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Realm"
+                android:textColor="@color/colorBase"
+                android:textSize="70sp"
+                android:fontFamily="casual"
+                android:layout_toEndOf="@+id/geo_label" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/no_characters_info"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline"
+            android:text="@string/no_character_info"
+            android:textStyle="italic"
+            android:textSize="14sp"
+            android:textColor="@color/colorBase"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline"
+            android:layout_margin="5dp"
+            android:indeterminateTint="@color/colorBase"
+            android:visibility="gone"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/character_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="75dp"
+            android:layout_marginBottom="48dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <ImageButton
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:id="@+id/button_create"
+            android:src="@drawable/ic_add"
+            android:background="@drawable/circular_button"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="25dp"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar_create"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="13dp"
+            android:indeterminateTint="@color/colorBase"
+            android:visibility="gone"/>
+
+    </android.support.constraint.ConstraintLayout>
 
 </FrameLayout>

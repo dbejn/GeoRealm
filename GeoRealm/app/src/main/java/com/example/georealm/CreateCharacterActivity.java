@@ -6,9 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -32,15 +34,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.georealm.helper.Constants.DEFAULT_ZOOM;
+
 public class CreateCharacterActivity extends FragmentActivity implements OnMapReadyCallback {
 
     // MAPS
-    private GoogleMap mMap;
+    private GoogleMap map;
 
     // UI
-    private ImageButton button_back;
-    private ImageButton button_create;
-    private RelativeLayout layout_create;
+    private Button button_back;
+    private Button button_create;
     private ImageButton button_more_swordsman;
     private ImageButton button_more_sorcerer;
     private ImageButton button_more_rogue;
@@ -59,6 +62,8 @@ public class CreateCharacterActivity extends FragmentActivity implements OnMapRe
     private RelativeLayout select_assassin_layout;
     private RelativeLayout select_shadow_layout;
 
+    private ProgressBar progress_bar;
+
     private int selected_class_num = -1;
 
     // FIRESTORE
@@ -69,20 +74,23 @@ public class CreateCharacterActivity extends FragmentActivity implements OnMapRe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_character);
 
+
         // MAPS
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
         // FIRESTORE
         database = FirebaseFirestore.getInstance();
 
+
         // UI
+        progress_bar = findViewById(R.id.progress_bar);
+
         swordsman_subclass_layout = findViewById(R.id.swordsman_subclass_layout);
         sorcerer_subclass_layout = findViewById(R.id.sorcerer_subclass_layout);
         rogue_subclass_layout = findViewById(R.id.rogue_subclass_layout);
-
-        layout_create = findViewById(R.id.layout_create);
 
         edit_character_name = findViewById(R.id.edit_character_name);
 
@@ -107,42 +115,48 @@ public class CreateCharacterActivity extends FragmentActivity implements OnMapRe
                     Toast.makeText(CreateCharacterActivity.this,
                             "Name must be at least 3 characters long",
                             Toast.LENGTH_SHORT).show();
-
-                    return;
                 }
+                else {
 
-                DocumentReference character_ref = database.collection("characters")
-                        .document(edit_character_name.getText().toString());
-                character_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    progress_bar.setVisibility(View.VISIBLE);
+                    enableCommands(false);
 
-                        if (task.isSuccessful()) {
+                    DocumentReference character_ref = database.collection("characters")
+                            .document(edit_character_name.getText().toString());
+                    character_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
+                            if (task.isSuccessful()) {
 
-                                Toast.makeText(CreateCharacterActivity.this,
-                                        "Character " + edit_character_name.getText().toString() + " already exists",
-                                        Toast.LENGTH_SHORT).show();
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+
+                                    Toast.makeText(CreateCharacterActivity.this,
+                                            "Character " + edit_character_name.getText().toString() + " already exists",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+
+                                    Intent return_intent = new Intent();
+                                    return_intent.putExtra("character_name", edit_character_name.getText().toString());
+                                    return_intent.putExtra("character_class", selected_class_num);
+                                    setResult(RESULT_OK, return_intent);
+                                    finish();
+                                }
                             }
                             else {
 
-                                Intent return_intent = new Intent();
-                                return_intent.putExtra("character_name", edit_character_name.getText().toString());
-                                return_intent.putExtra("character_class", selected_class_num);
-                                setResult(RESULT_OK, return_intent);
-                                finish();
+                                Toast.makeText(CreateCharacterActivity.this,
+                                        "Failed to get character document. Character creation failed",
+                                        Toast.LENGTH_SHORT).show();
                             }
-                        }
-                        else {
 
-                            Toast.makeText(CreateCharacterActivity.this,
-                                    "Failed to get character document. Character creation failed",
-                                    Toast.LENGTH_SHORT).show();
+                            progress_bar.setVisibility(View.INVISIBLE);
+                            enableCommands(true);
                         }
-                    }
-                });
+                    });
+                }
             }
         });
 
@@ -276,11 +290,12 @@ public class CreateCharacterActivity extends FragmentActivity implements OnMapRe
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        mMap = googleMap;
+        map = googleMap;
+        map.getUiSettings().setAllGesturesEnabled(false);
 
         try {
 
-            mMap.setMapStyle(MapStyleOptions
+            map.setMapStyle(MapStyleOptions
                     .loadRawResourceStyle(this, R.raw.google_maps_style));
         }
         catch (Resources.NotFoundException e) {
@@ -288,8 +303,13 @@ public class CreateCharacterActivity extends FragmentActivity implements OnMapRe
             // exception
         }
 
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
+        double latitude = getIntent().getDoubleExtra("latitude", -33.8523341);
+        double longitude = getIntent().getDoubleExtra("longitude", 151.2106085);
+        LatLng location = new LatLng(latitude, longitude);
+
+        map.moveCamera(CameraUpdateFactory
+                .newLatLngZoom(location, DEFAULT_ZOOM));
+        map.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     private void deselectCurrentLayout() {
@@ -319,7 +339,7 @@ public class CreateCharacterActivity extends FragmentActivity implements OnMapRe
 
     private void deselectCurrent() {
 
-        layout_create.setBackgroundResource(R.drawable.left_rounded_rec_disabled);
+        button_create.setBackgroundResource(R.drawable.left_rounded_rec_disabled);
         button_create.setEnabled(false);
         deselectCurrentLayout();
         selected_class_num = -1;
@@ -332,8 +352,18 @@ public class CreateCharacterActivity extends FragmentActivity implements OnMapRe
             deselectCurrentLayout();
             select_layout.setForeground(getDrawable(R.drawable.select));
             selected_class_num = subclass;
-            layout_create.setBackgroundResource(R.drawable.left_rounded_rec_base);
+            button_create.setBackgroundResource(R.drawable.left_rounded_rec_base);
             button_create.setEnabled(true);
         }
+    }
+
+    private void enableCommands(boolean enable) {
+
+        button_create.setEnabled(enable);
+        edit_character_name.setEnabled(enable);
+        swordsman_subclass_layout.setEnabled(enable);
+        sorcerer_subclass_layout.setEnabled(enable);
+        rogue_subclass_layout.setEnabled(enable);
+        button_back.setEnabled(enable);
     }
 }

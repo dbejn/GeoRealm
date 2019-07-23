@@ -7,10 +7,19 @@
     <string name="title_activity_highscore">HighscoreActivity</string>
     <string name="title_activity_battle">BattleActivity</string>
     <string name="title_activity_choose_character">ChooseCharacter</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
 
     <string name="quit">quit</string>
-    <string name="login">login, fierce warrior</string>
+    <string name="login_fierce_warrior">login, fierce warrior</string>
+    <string name="login">login</string>
+    <string name="register">register</string>
     <string name="logout">logout</string>
+    <string name="password">password</string>
+    <string name="username">username</string>
+    <string name="email">email</string>
+    <string name="no_account">don\'t have an account?</string>
+    <string name="click_here">click here</string>
     <string name="choose_character">choose your character</string>
     <string name="no_character_info">you do not have any created characters\nclick the + button to create one</string>
     <string name="swordsman">swordsman</string>
@@ -27,8 +36,10 @@
     <string name="inventory">inventory</string>
     <string name="create">create</string>
     <string name="character_name">name</string>
-    <string name="enter_character_name">enter character name</string>
+    <string name="enter_character_name">character name</string>
     <string name="character_class">class</string>
+    <string name="character_subclass">subclass</string>
+    <string name="character_level">level</string>
     <string name="swordsman_class_desc">swordsmen are melee fighters highly trained in the arts of
         weaponry. they are strong and quick on the battlefield,
         usually leading the charge.</string>
@@ -88,4 +99,5 @@
     <string name="stamina">stamina</string>
     <string name="items">items</string>
     <string name="history">history</string>
+    <string name="name_level">%1$s, %2$d</string>
 </resources>

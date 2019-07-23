@@ -9,36 +9,33 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.georealm.R;
-import com.example.georealm.data.CharacterCardData;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.georealm.data.CharacterData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCardDataAdapter.CharacterCardViewHolder> {
 
-    private List<CharacterCardData> character_data;
+    private List<CharacterData> character_data;
     private Context context;
     private int selected;
-    private RelativeLayout layout_play;
+    private Button button_play;
     private CharacterCardDataAdapter.CharacterCardViewHolder selected_holder;
 
-    public CharacterCardDataAdapter(Context ctx, RelativeLayout play) {
+    public CharacterCardDataAdapter(Context ctx, Button play) {
 
         character_data = new ArrayList<>();
         context = ctx;
         selected = -1;
-        layout_play = play;
+        button_play = play;
     }
 
-    public void addCharacterToList(int position, CharacterCardData data) {
+    public void addCharacterToList(int position, CharacterData data) {
 
         character_data.add(position, data);
     }
@@ -86,7 +83,7 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
     public void onBindViewHolder(@NonNull final CharacterCardDataAdapter.CharacterCardViewHolder characterCardViewHolder, int i) {
 
         final int position = i;
-        CharacterCardData data = character_data.get(i);
+        CharacterData data = character_data.get(i);
 
         characterCardViewHolder.character_card_name.setText(data.getCharacter_name());
         characterCardViewHolder.character_card_level.setText(context.getString(R.string.level_x, data.getCharacter_level()));
@@ -96,8 +93,6 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, Integer.toString(position), Toast.LENGTH_SHORT).show();
-
                 if (selected != position) {
 
                     deselectCurrentLayout();
@@ -106,9 +101,14 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
 
                     if (selected == -1) {
 
-                        layout_play.setBackgroundResource(R.drawable.left_rounded_rec_base);
-                        ImageButton button_play = layout_play.findViewById(R.id.button_play);
+                        button_play.setBackgroundResource(R.drawable.left_rounded_rec_base);
                         button_play.setEnabled(true);
+                        button_play.setTag(R.string.character_name, characterCardViewHolder.character_card_name.getText().toString());
+                        button_play.setTag(R.string.character_class, characterCardViewHolder.character_card_class.getText().toString());
+                        button_play.setTag(R.string.character_subclass, characterCardViewHolder.character_card_subclass.getText().toString());
+                        String level = characterCardViewHolder.character_card_level.getText().toString();
+                        level = level.substring(6, level.length() - 1);
+                        button_play.setTag(R.string.character_level, level);
                     }
 
                     selected = position;

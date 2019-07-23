@@ -10,13 +10,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.georealm.adapters.CharacterCardDataAdapter;
-import com.example.georealm.data.CharacterCardData;
+import com.example.georealm.data.CharacterData;
 import com.example.georealm.helper.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,27 +25,25 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.example.georealm.helper.Constants.DEFAULT_ZOOM;
 
 public class ChooseCharacterActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int CREATE_CHARACTER_REQUEST = 1;
 
     // MAPS
-    private GoogleMap mMap;
+    private GoogleMap map;
+    private double latitude;
+    private double longitude;
 
     // CHARACTER LIST
     private RecyclerView character_list;
@@ -52,28 +51,33 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
     private RecyclerView.LayoutManager layout_manager;
 
     // FIRESTORE
-    FirebaseFirestore database;
-
-    private String user_id_token;
+    private FirebaseFirestore database;
+    private String username;
 
     // UI
-    private ImageButton button_back;
+    private Button button_back;
     private ImageButton button_create;
     private TextView no_character_info;
-    private ImageButton button_play;
-    private RelativeLayout layout_play;
+    private Button button_play;
+    private ProgressBar progress_bar;
+    private ProgressBar progress_bar_create;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_character);
 
-        user_id_token = getIntent().getStringExtra("user_id_token");
+        username = getIntent().getStringExtra("username");
+
 
         // MAPS
+        latitude = getIntent().getDoubleExtra("latitude", -33.8523341);
+        longitude = getIntent().getDoubleExtra("longitude", 151.2106085);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
 
         // CHARACTER LIST
         character_list = findViewById(R.id.character_list);
@@ -83,45 +87,16 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
         layout_manager = new LinearLayoutManager(ChooseCharacterActivity.this);
         character_list.setLayoutManager(layout_manager);
 
-        layout_play = findViewById(R.id.layout_play);
-        character_card_adapter = new CharacterCardDataAdapter(this, layout_play);
+        button_play = findViewById(R.id.button_play);
+
+        character_card_adapter = new CharacterCardDataAdapter(this, button_play);
         character_list.setAdapter(character_card_adapter);
 
-        // FIRESTORE
-        database = FirebaseFirestore.getInstance();
-
-        no_character_info = findViewById(R.id.no_characters_info);
-        CollectionReference characters_ref = database.collection("users")
-                .document(user_id_token).collection("characters");
-        characters_ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                if (task.isSuccessful()) {
-
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-
-                        CharacterCardData character_data = document.toObject(CharacterCardData.class);
-                        ((CharacterCardDataAdapter)character_card_adapter).addCharacterToList(character_card_adapter.getItemCount(), character_data);
-                    }
-
-                    if (character_card_adapter.getItemCount() == 0) {
-
-                        no_character_info.setVisibility(View.VISIBLE);
-                    }
-
-                    // CHARACTER LIST
-                    character_card_adapter.notifyDataSetChanged();
-                }
-                else {
-
-                    Toast.makeText(ChooseCharacterActivity.this,
-                            "Failed to get characters", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
         // UI
+        progress_bar = findViewById(R.id.progress_bar);
+        progress_bar_create = findViewById(R.id.progress_bar_create);
+
         button_back = findViewById(R.id.button_back);
         button_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,18 +112,65 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
             public void onClick(View v) {
 
                 Intent intent = new Intent(ChooseCharacterActivity.this, CreateCharacterActivity.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
                 startActivityForResult(intent, CREATE_CHARACTER_REQUEST);
             }
         });
 
-        button_play = findViewById(R.id.button_play);
         button_play.setEnabled(false);
         button_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent intent = new Intent(ChooseCharacterActivity.this, GameActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("character_name", button_play.getTag(R.string.character_name).toString());
+                intent.putExtra("character_class", button_play.getTag(R.string.character_class).toString());
+                intent.putExtra("character_subclass", button_play.getTag(R.string.character_subclass).toString());
+                intent.putExtra("character_level", Integer.parseInt(button_play.getTag(R.string.character_level).toString()));
                 startActivity(intent);
+            }
+        });
+
+
+        // FIRESTORE
+        database = FirebaseFirestore.getInstance();
+
+        progress_bar.setVisibility(View.VISIBLE);
+        enableCommands(false);
+
+        no_character_info = findViewById(R.id.no_characters_info);
+        CollectionReference characters_ref = database.collection("users")
+                .document(username).collection("characters");
+        characters_ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()) {
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+
+                        CharacterData character_data = document.toObject(CharacterData.class);
+                        ((CharacterCardDataAdapter)character_card_adapter).addCharacterToList(character_card_adapter.getItemCount(), character_data);
+                    }
+
+                    // CHARACTER LIST
+                    character_card_adapter.notifyDataSetChanged();
+                }
+                else {
+
+                    Toast.makeText(ChooseCharacterActivity.this,
+                            "Failed to get characters", Toast.LENGTH_SHORT).show();
+                }
+
+                progress_bar.setVisibility(View.GONE);
+                enableCommands(true);
+
+                if (character_card_adapter.getItemCount() == 0) {
+
+                    no_character_info.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -156,11 +178,12 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        mMap = googleMap;
+        map = googleMap;
+        map.getUiSettings().setAllGesturesEnabled(false);
 
         try {
 
-            mMap.setMapStyle(MapStyleOptions
+            map.setMapStyle(MapStyleOptions
                     .loadRawResourceStyle(this, R.raw.google_maps_style));
         }
         catch (Resources.NotFoundException e) {
@@ -168,8 +191,13 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
             // exception
         }
 
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
+        double latitude = getIntent().getDoubleExtra("latitude", -33.8523341);
+        double longitude = getIntent().getDoubleExtra("longitude", 151.2106085);
+        LatLng location = new LatLng(latitude, longitude);
+
+        map.moveCamera(CameraUpdateFactory
+                .newLatLngZoom(location, DEFAULT_ZOOM));
+        map.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     @Override
@@ -178,6 +206,9 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
         if (requestCode == CREATE_CHARACTER_REQUEST) {
 
             if (resultCode == Activity.RESULT_OK) {
+
+                progress_bar_create.setVisibility(View.VISIBLE);
+                enableCommands(false);
 
                 final String character_name = data.getStringExtra("character_name");
                 int subclass = data.getIntExtra("character_class", -1);
@@ -213,10 +244,10 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
                         break;
                 }
 
-                final CharacterCardData character_data = new CharacterCardData(
+                final CharacterData character_data = new CharacterData(
                         character_name, character_class, character_subclass, character_level);
 
-                database.collection("users").document(user_id_token)
+                database.collection("users").document(username)
                         .collection("characters")
                         .document(character_name).set(character_data)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -229,6 +260,10 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
 
                                 ((CharacterCardDataAdapter)character_card_adapter).addCharacterToList(0, character_data);
                                 character_card_adapter.notifyDataSetChanged();
+                                no_character_info.setVisibility(View.GONE);
+
+                                progress_bar_create.setVisibility(View.GONE);
+                                enableCommands(true);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -238,9 +273,19 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
                                 Toast.makeText(ChooseCharacterActivity.this,
                                         "Failed to create character",
                                         Toast.LENGTH_SHORT).show();
+
+                                progress_bar_create.setVisibility(View.GONE);
+                                enableCommands(true);
                             }
                         });
             }
         }
+    }
+
+    private void enableCommands(boolean enable) {
+
+        button_create.setEnabled(enable);
+        button_play.setEnabled(enable);
+        button_back.setEnabled(enable);
     }
 }

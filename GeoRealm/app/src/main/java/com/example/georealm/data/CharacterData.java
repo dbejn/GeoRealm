@@ -2,19 +2,19 @@ package com.example.georealm.data;
 
 import android.graphics.Color;
 
-public class CharacterCardData {
+public class CharacterData {
 
     private String character_name;
     private String character_class;
     private String character_subclass;
     private int character_level;
 
-    public CharacterCardData() {
+    public CharacterData() {
 
 
     }
 
-    public CharacterCardData(String name, String classs, String subclass, int lvl) {
+    public CharacterData(String name, String classs, String subclass, int lvl) {
 
         character_name = name;
         character_class = classs;
