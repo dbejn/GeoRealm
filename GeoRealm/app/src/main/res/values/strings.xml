@@ -66,9 +66,13 @@
     <string name="leveling_points">leveling points</string>
     <string name="experience">, experience</string>
     <string name="gems_collected">gems collected</string>
-    <string name="diamonds_mined">diamonds mined</string>
+    <string name="gems_spent">gems spent</string>
     <string name="monsters_slain">monsters slain</string>
     <string name="duels_won">duels won</string>
+    <string name="attack">attack damage</string>
+    <string name="defence">defence</string>
+    <string name="magic">magic damage</string>
+    <string name="magic_resistance">magic resistance</string>
     <string name="score">score</string>
     <string name="info">info</string>
     <string name="characters">characters</string>
@@ -80,7 +84,7 @@
     <string name="view_account">view account</string>
     <string name="challenge_to_duel">challenge to duel</string>
     <string name="last_seen">last seen</string>
-    <string name="learn_skill">learn skill</string>
+    <string name="learn_skill">learn skill (30 gems)</string>
     <string name="skill_sample">skill sample</string>
     <string name="description_sample">description sample description sample description \nsample description sample</string>
     <string name="stats_sample">stats sample\nstats sample</string>
@@ -100,4 +104,16 @@
     <string name="items">items</string>
     <string name="history">history</string>
     <string name="name_level">%1$s, %2$d</string>
+    <string name="marker_gem_title">gem</string>
+    <string name="marker_gem_info">hold to collect</string>
+    <string name="marker_gem_xp">+5 xp</string>
+    <string name="stats">stats</string>
+    <string name="achievements">achievements</string>
+    <string name="info_experience">%1$d/%2$d</string>
+    <string name="info_duels">%1$d/%2$d</string>
+    <string name="level_needed">level %1$d+ needed</string>
+    <string name="learned">learned</string>
+    <string name="available">available</string>
+    <string name="unavailable">unavailable</string>
+    <string name="equip">equip</string>
 </resources>

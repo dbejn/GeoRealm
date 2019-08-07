@@ -5,39 +5,40 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
-import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.ImageViewCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.georealm.adapters.MarkerInfoWindowAdapter;
 import com.example.georealm.data.CharacterData;
-import com.example.georealm.helper.Constants;
+import com.example.georealm.data.Icebound;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -46,12 +47,32 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.example.georealm.helper.Constants.CREATE_MARKERS_URL;
 import static com.example.georealm.helper.Constants.DEFAULT_ZOOM;
-import static com.example.georealm.helper.Constants.MIN_ZOOM;
+import static com.example.georealm.helper.Constants.ICEBOUND;
+import static com.example.georealm.helper.Constants.PYROMANCER;
+import static com.example.georealm.helper.Constants.ROGUE;
+import static com.example.georealm.helper.Constants.SORCERER;
+import static com.example.georealm.helper.Constants.SWORDSMAN;
+import static com.example.georealm.helper.Functions.arrayContains;
 
-public class GameActivity extends FragmentActivity implements OnMapReadyCallback {
+public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWindowLongClickListener, OnMapReadyCallback {
 
     // MAPS
     private GoogleMap map;
@@ -84,15 +105,21 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageView class_image;
     private TextView text_character;
     private String character_name;
-    private String character_class;
-    private String character_subclass;
+    private int character_class;
+    private int character_subclass;
     private int character_level;
     private String username;
 
     private ProgressBar progress_bar;
 
+    private CharacterData character;
+
     // FIRESTORE
     private FirebaseFirestore database;
+
+    // CLOUD FUNCTIONS
+    private RequestQueue request_queue;
+    private StringRequest string_request;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +134,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         username = getIntent().getStringExtra("username");
         character_name = getIntent().getStringExtra("character_name");
-        character_class = getIntent().getStringExtra("character_class");
-        character_subclass = getIntent().getStringExtra("character_subclass");
+        character_class = getIntent().getIntExtra("character_class", 1);
+        character_subclass = getIntent().getIntExtra("character_subclass", 1);
         character_level = getIntent().getIntExtra("character_level", 1);
 
         // MAPS
@@ -141,9 +168,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
                     if (map != null) {
 
-                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        /*map.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(last_known_location.getLatitude(),
-                                        last_known_location.getLongitude()), map.getCameraPosition().zoom));
+                                        last_known_location.getLongitude()), map.getCameraPosition().zoom));*/
                     }
                 }
             }
@@ -190,6 +217,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
 
                 Intent intent = new Intent(GameActivity.this, CharacterActivity.class);
+                intent.putExtra("subclass", character_subclass);
+                intent.putExtra("character", character);
+                intent.putExtra("latitude", my_marker.getPosition().latitude);
+                intent.putExtra("longitude", my_marker.getPosition().longitude);
                 startActivity(intent);
             }
         });
@@ -218,7 +249,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         progress_bar.setVisibility(View.VISIBLE);
 
         database = FirebaseFirestore.getInstance();
-        DocumentReference character_doc = database.collection("characters").document("character_name");
+        DocumentReference character_doc = database.collection("characters").document(character_name);
         character_doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -228,12 +259,20 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     DocumentSnapshot document = task.getResult();
                     if (!document.exists()) {
 
-                        CharacterData character_data = new CharacterData(
-                                character_name, character_class, character_subclass, character_level);
+                        switch (character_subclass) {
+
+                            case PYROMANCER:
+                                Toast.makeText(GameActivity.this,
+                                        "Welcome to the GeoRealm", Toast.LENGTH_SHORT).show();
+                                break;
+                            case ICEBOUND:
+                                character = new Icebound(character_name);
+                                break;
+                        }
 
                         DocumentReference character_create_doc = database
-                                .collection("characters").document("character_name");
-                        character_create_doc.set(character_data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                .collection("characters").document(character_name);
+                        character_create_doc.set(character).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
 
@@ -241,8 +280,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
                                     setClassImage(character_class);
                                     text_character.setText(getString(R.string.name_level, character_name, character_level));
-
-                                    progress_bar.setVisibility(View.GONE);
 
                                     Toast.makeText(GameActivity.this,
                                             "Welcome to the GeoRealm", Toast.LENGTH_SHORT).show();
@@ -259,10 +296,19 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     else {
 
+                        switch (character_subclass) {
+
+                            case PYROMANCER:
+                                Toast.makeText(GameActivity.this,
+                                        "Welcome to the GeoRealm", Toast.LENGTH_SHORT).show();
+                                break;
+                            case ICEBOUND:
+                                character = document.toObject(Icebound.class);
+                                break;
+                        }
+
                         setClassImage(character_class);
                         text_character.setText(getString(R.string.name_level, character_name, character_level));
-
-                        progress_bar.setVisibility(View.GONE);
 
                         Toast.makeText(GameActivity.this,
                                 "Welcome to the GeoRealm", Toast.LENGTH_SHORT).show();
@@ -277,6 +323,118 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
+
+        // CLOUD FUNCTIONS - MARKERS
+        request_queue = Volley.newRequestQueue(this);
+        string_request = new StringRequest(Request.Method.POST, CREATE_MARKERS_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                final String res = response;
+
+                DocumentReference user_doc = database.collection("users").document(username);
+                user_doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                        if (task.isSuccessful()) {
+
+                            DocumentSnapshot document = task.getResult();
+                            Map<String, Object> data = document.getData();
+                            ArrayList<Long> markers_nums = (ArrayList<Long>) data.get("collected_gems");
+
+                            String last_online = (String) data.get("last_online");
+                            SimpleDateFormat date_format = new SimpleDateFormat("dd.MM.yyyy");
+                            try {
+
+                                Date date = date_format.parse(last_online);
+                                String string_date_now = date_format.format(Calendar.getInstance().getTime());
+                                Date date_now = date_format.parse(string_date_now);
+                                if (date_now.after(date)) {
+
+                                    markers_nums = null;
+                                    DocumentReference user_doc = database.collection("users").document(username);
+                                    user_doc.update("collected_gems", FieldValue.delete());
+                                }
+                            }
+                            catch (ParseException e) {
+
+                                e.printStackTrace();
+
+                                Toast.makeText(GameActivity.this,
+                                        "Could not start a game, please try again. " + e.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+
+                                finish();
+                            }
+
+                            try {
+
+                                JSONObject res_data = new JSONObject(res);
+                                JSONArray json_array_lat = res_data.getJSONArray("latitude");
+                                JSONArray json_array_lon = res_data.getJSONArray("longitude");
+
+                                for (int i = 0; i < json_array_lat.length(); i++) {
+
+                                    if (arrayContains(markers_nums, i)) {
+
+                                        continue;
+                                    }
+
+                                    double latitude = json_array_lat.getDouble(i);
+                                    double longitude = json_array_lon.getDouble(i);
+
+                                    Marker marker = map.addMarker(new MarkerOptions()
+                                            .position(new LatLng(latitude, longitude))
+                                            .infoWindowAnchor(0.5f, 0.75f)
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.gem_marker)));
+                                    marker.setTitle("gem");
+                                    marker.setTag(i);
+
+                                    if (i == json_array_lat.length() - 1) {
+
+                                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                                new LatLng(latitude, longitude), DEFAULT_ZOOM));
+                                    }
+                                }
+
+                                progress_bar.setVisibility(View.GONE);
+                            }
+                            catch (JSONException json_e) {
+
+                                json_e.printStackTrace();
+
+                                Toast.makeText(GameActivity.this,
+                                        "Could not start a game, please try again. " + json_e.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+
+                                finish();
+                            }
+                        }
+                        else {
+
+                            Toast.makeText(GameActivity.this,
+                                    "Could not start a game, please try again.",
+                                    Toast.LENGTH_SHORT).show();
+
+                            finish();
+                        }
+                    }
+                });
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Toast.makeText(GameActivity.this,
+                        "Could not start a game, please try again. " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+
+                finish();
+            }
+        });
+        request_queue.add(string_request);
     }
 
     @Override
@@ -298,6 +456,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
             map.setMapStyle(MapStyleOptions
                     .loadRawResourceStyle(this, R.raw.google_maps_style));
+
+            MarkerInfoWindowAdapter marker_adapter =
+                    new MarkerInfoWindowAdapter(GameActivity.this);
+            map.setInfoWindowAdapter(marker_adapter);
+
+            map.setOnInfoWindowLongClickListener(this);
         }
         catch (Resources.NotFoundException e) {
 
@@ -334,20 +498,20 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
         else {
 
-            map.getUiSettings().setAllGesturesEnabled(false);
+            // map.getUiSettings().setAllGesturesEnabled(false);
             map.getUiSettings().setZoomGesturesEnabled(true);
             map.getUiSettings().setRotateGesturesEnabled(true);
             map.getUiSettings().setCompassEnabled(false);
-            map.setMinZoomPreference(MIN_ZOOM);
+            // map.setMinZoomPreference(MIN_ZOOM);
             map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
                 @Override
                 public void onCameraIdle() {
 
-                    CameraUpdate animation = CameraUpdateFactory
+                    /*CameraUpdate animation = CameraUpdateFactory
                             .newLatLngZoom(new LatLng(last_known_location.getLatitude(),
                                     last_known_location.getLongitude()),
                                     map.getCameraPosition().zoom);
-                    map.animateCamera(animation);
+                    map.animateCamera(animation);*/
                 }
             });
         }
@@ -394,9 +558,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
                                 my_marker = map.addMarker(new MarkerOptions()
                                         .position(new LatLng(last_known_location.getLatitude(), last_known_location.getLongitude()))
-                                        .title(username)
-                                        .snippet(character_name)
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.my_marker)));
+                                my_marker.setTitle("player");
                             }
                             else {
 
@@ -438,17 +601,17 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         updateLocationUI();
     }
 
-    private void setClassImage(String classs) {
+    private void setClassImage(int classs) {
 
         switch (classs) {
 
-            case "swordsman":
+            case SWORDSMAN:
                 class_image.setImageResource(R.drawable.ic_sword);
                 break;
-            case "sorcerer":
+            case SORCERER:
                 class_image.setImageResource(R.drawable.ic_hat);
                 break;
-            case "rogue":
+            case ROGUE:
                 class_image.setImageResource(R.drawable.ic_dagger);
                 break;
         }
@@ -473,12 +636,34 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         fused_location_provider_client.removeLocationUpdates(location_callback);
     }
 
+    private void changeUserStatus(boolean online) {
+
+        DocumentReference user_ref = database.collection("users").document(username);
+
+        if (online) {
+
+            user_ref.update("status", "online");
+        }
+        else {
+
+            SimpleDateFormat date_format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            Date date = Calendar.getInstance().getTime();
+            String string_date = date_format.format(date);
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("status", "offline");
+            data.put("last_online", string_date);
+            user_ref.update(data);
+        }
+    }
+
     @Override
     protected void onResume() {
 
         super.onResume();
 
         startLocationUpdates();
+        changeUserStatus(true);
     }
 
     @Override
@@ -487,5 +672,44 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         super.onPause();
 
         stopLocationUpdates();
+        changeUserStatus(false);
+        DocumentReference character_ref = database.collection("characters").document(character_name);
+        character_ref.set(character);
+    }
+
+    @Override
+    public void onInfoWindowLongClick(Marker marker) {
+
+        progress_bar.setVisibility(View.VISIBLE);
+        Toast.makeText(GameActivity.this, "Collecting gem...", Toast.LENGTH_SHORT).show();
+
+        final Marker m = marker;
+
+        int marker_num = Integer.parseInt(marker.getTag().toString());
+
+
+        DocumentReference user_doc = database.collection("users").document(username);
+        user_doc.update("collected_gems", FieldValue.arrayUnion(marker_num),
+                "score", FieldValue.increment(1))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (task.isSuccessful()) {
+
+                    m.remove();
+                    Toast.makeText(GameActivity.this, "+1 gem", Toast.LENGTH_SHORT).show();
+                    character.setGems_collected(character.getGems_collected() + 1);
+                    character.setScore(character.getScore() + 1);
+                    character.setExperience(character.getExperience() + 10);
+                    progress_bar.setVisibility(View.GONE);
+                }
+                else {
+
+                    Toast.makeText(GameActivity.this, "Failed to collect gem, please try again", Toast.LENGTH_SHORT).show();
+                    progress_bar.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 }

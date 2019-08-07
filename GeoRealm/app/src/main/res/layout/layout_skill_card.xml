@@ -1,57 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/colorSword"
     app:cardCornerRadius="15dp"
-    android:layout_margin="7dp">
+    android:layout_marginTop="7dp"
+    android:layout_marginLeft="7dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginBottom="18dp">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_skill_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/choose_character_swordsman_card"
-        android:foreground="@drawable/select">
+        android:clickable="true"
+        android:focusable="true">
 
         <TextView
             android:id="@+id/skill_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="7dp"
             android:layout_marginBottom="10dp"
             android:text="@string/skill_sample"
             android:textColor="@color/colorSword"
             android:textSize="22sp"
-            android:textStyle="bold|italic" />
+            android:textStyle="bold|italic"
+            android:paddingBottom="10dp"/>
 
-        <ImageButton
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button_more_swordsman_skill"
-            android:layout_alignBottom="@+id/skill_name"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_arrow_up"
-            android:background="@android:color/transparent"
-            android:tint="@color/colorSword"
-            android:layout_marginEnd="15dp"/>
+            android:id="@+id/skill_status"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/layout_skill_description"
+            android:text="@string/level_needed"
+            android:textColor="@color/colorSword"
+            android:textSize="16sp"
+            android:textStyle="bold|italic"
+            android:layout_marginEnd="10dp"/>
 
         <RelativeLayout
+            android:id="@+id/layout_skill_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/skill_name"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="@drawable/swordsman_skill_gradient">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/skill_name"
+            android:background="@drawable/swordsman_skill_gradient"
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/skill_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="7dp"
                 android:text="@string/description_sample"
                 android:textColor="@color/colorSword"
                 android:textSize="16sp"
@@ -63,18 +74,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:id="@+id/skill_stats"
                 android:layout_below="@+id/skill_description"
                 android:text="@string/stats_sample"
                 android:textColor="@color/colorSword"
                 android:textSize="16sp"
                 android:textStyle="italic"
-                android:layout_marginBottom="10dp"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"/>
 
         </RelativeLayout>
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

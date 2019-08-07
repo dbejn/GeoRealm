@@ -5,7 +5,7 @@
     <color name="colorAccent">#8C6532</color>
     <color name="colorTint">#B38C6532</color>
     <color name="colorBase">#EBE3CD</color>
-    <color name="colorLightGrey">#80636363</color>
+    <color name="colorLightGrey">#B3999999</color>
     <color name="colorDisabled">#222222</color>
 
     <color name="colorSword">#8F4B2C</color>
@@ -17,4 +17,6 @@
     <color name="colorStamina">#FF8000</color>
 
     <color name="colorDelete">#A82525</color>
+
+    <color name="colorMarkerGem">#FF2A00</color>
 </resources>

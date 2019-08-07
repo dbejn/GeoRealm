@@ -14,14 +14,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.georealm.R;
-import com.example.georealm.data.CharacterData;
+import com.example.georealm.data.CharacterCardData;
+import com.example.georealm.helper.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.georealm.helper.Constants.ROGUE;
+import static com.example.georealm.helper.Constants.SORCERER;
+import static com.example.georealm.helper.Constants.SWORDSMAN;
+
 public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCardDataAdapter.CharacterCardViewHolder> {
 
-    private List<CharacterData> character_data;
+    private List<CharacterCardData> character_data;
     private Context context;
     private int selected;
     private Button button_play;
@@ -35,7 +40,7 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
         button_play = play;
     }
 
-    public void addCharacterToList(int position, CharacterData data) {
+    public void addCharacterToList(int position, CharacterCardData data) {
 
         character_data.add(position, data);
     }
@@ -83,12 +88,44 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
     public void onBindViewHolder(@NonNull final CharacterCardDataAdapter.CharacterCardViewHolder characterCardViewHolder, int i) {
 
         final int position = i;
-        CharacterData data = character_data.get(i);
+        final CharacterCardData data = character_data.get(i);
 
         characterCardViewHolder.character_card_name.setText(data.getCharacter_name());
         characterCardViewHolder.character_card_level.setText(context.getString(R.string.level_x, data.getCharacter_level()));
-        characterCardViewHolder.character_card_subclass.setText(data.getCharacter_subclass());
-        characterCardViewHolder.character_card_class.setText(data.getCharacter_class());
+
+        String character_class = "";
+        String character_subclass = "";
+
+        switch (data.getCharacter_subclass()) {
+
+            case Constants.BERSERKER:
+                character_class = "swordsman";
+                character_subclass = "berserker";
+                break;
+            case Constants.PALADIN:
+                character_class = "swordsman";
+                character_subclass = "paladin";
+                break;
+            case Constants.PYROMANCER:
+                character_class = "sorcerer";
+                character_subclass = "pyromancer";
+                break;
+            case Constants.ICEBOUND:
+                character_class = "sorcerer";
+                character_subclass = "icebound";
+                break;
+            case Constants.ASSASSIN:
+                character_class = "rogue";
+                character_subclass = "assassin";
+                break;
+            case Constants.SHADOW:
+                character_class = "rogue";
+                character_subclass = "shadow";
+                break;
+        }
+
+        characterCardViewHolder.character_card_subclass.setText(character_subclass);
+        characterCardViewHolder.character_card_class.setText(character_class);
         characterCardViewHolder.character_card_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,12 +140,12 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
 
                         button_play.setBackgroundResource(R.drawable.left_rounded_rec_base);
                         button_play.setEnabled(true);
-                        button_play.setTag(R.string.character_name, characterCardViewHolder.character_card_name.getText().toString());
-                        button_play.setTag(R.string.character_class, characterCardViewHolder.character_card_class.getText().toString());
-                        button_play.setTag(R.string.character_subclass, characterCardViewHolder.character_card_subclass.getText().toString());
-                        String level = characterCardViewHolder.character_card_level.getText().toString();
-                        level = level.substring(6, level.length() - 1);
-                        button_play.setTag(R.string.character_level, level);
+                        button_play.setTag(R.string.character_name, characterCardViewHolder.character_card_name.getText().toString());// characterCardViewHolder.character_card_class.getText().toString()
+                        button_play.setTag(R.string.character_class, data.getCharacter_class());
+                        button_play.setTag(R.string.character_subclass, data.getCharacter_subclass());
+                        // String level = characterCardViewHolder.character_card_level.getText().toString();
+                        // level = level.substring(6, level.length() - 1);
+                        button_play.setTag(R.string.character_level, data.getCharacter_level());
                     }
 
                     selected = position;
@@ -150,7 +187,7 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
         dialog_builder.setNegativeButton("No", null);
         dialog_builder.show();*/
 
-        if (data.getCharacter_class().equals("swordsman")) {
+        if (data.getCharacter_class() == SWORDSMAN) {
 
             characterCardViewHolder.character_card_layout.setBackgroundResource(R.drawable.choose_character_swordsman_card);
             characterCardViewHolder.character_card_image.setImageResource(R.drawable.sword);
@@ -160,7 +197,7 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
             characterCardViewHolder.character_card_subclass.setTextColor(ContextCompat.getColor(context, R.color.colorSword));
             characterCardViewHolder.character_card_class.setTextColor(ContextCompat.getColor(context, R.color.colorSword));
         }
-        else if (data.getCharacter_class().equals("sorcerer")) {
+        else if (data.getCharacter_class() == SORCERER) {
 
             characterCardViewHolder.character_card_layout.setBackgroundResource(R.drawable.choose_character_sorcerer_card);
             characterCardViewHolder.character_card_image.setImageResource(R.drawable.magic_hat);
@@ -170,7 +207,7 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
             characterCardViewHolder.character_card_subclass.setTextColor(ContextCompat.getColor(context, R.color.colorHat));
             characterCardViewHolder.character_card_class.setTextColor(ContextCompat.getColor(context, R.color.colorHat));
         }
-        else if (data.getCharacter_class().equals("rogue")) {
+        else if (data.getCharacter_class() == ROGUE) {
 
             characterCardViewHolder.character_card_layout.setBackgroundResource(R.drawable.choose_character_rogue_card);
             characterCardViewHolder.character_card_image.setImageResource(R.drawable.dagger);

@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/text_diamonds"
-            android:text="@string/diamonds_mined"
+            android:text="@string/gems_spent"
             android:textStyle="italic"
             android:textSize="20sp"
             android:textColor="@color/colorBase"

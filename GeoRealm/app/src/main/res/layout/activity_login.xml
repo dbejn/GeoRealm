@@ -63,20 +63,6 @@
             android:padding="10dp"
             android:textCursorDrawable="@color/colorBase"/>
 
-        <!--<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/label_password"
-            android:text="@string/password"
-            android:textColor="@color/colorBase"
-            android:textSize="16sp"
-            android:textStyle="italic|bold"
-            map:layout_constraintRight_toLeftOf="@+id/edit_password"
-            map:layout_constraintTop_toTopOf="@+id/edit_password"
-            map:layout_constraintLeft_toLeftOf="parent"
-            map:layout_constraintHorizontal_bias="1"
-            android:layout_marginEnd="15dp"/>-->
-
         <EditText
             android:id="@+id/edit_email"
             android:layout_width="0dp"
@@ -98,20 +84,6 @@
             android:background="@drawable/edit_text_background"
             android:padding="10dp"
             android:textCursorDrawable="@color/colorBase"/>
-
-        <!--<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/label_email"
-            android:text="@string/email"
-            android:textColor="@color/colorBase"
-            android:textSize="16sp"
-            android:textStyle="italic|bold"
-            map:layout_constraintTop_toTopOf="@+id/edit_email"
-            map:layout_constraintLeft_toLeftOf="parent"
-            map:layout_constraintRight_toLeftOf="@+id/edit_email"
-            map:layout_constraintHorizontal_bias="1"
-            android:layout_marginEnd="15dp"/>-->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -169,11 +141,11 @@
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            map:layout_constraintLeft_toLeftOf="parent"
+            map:layout_constraintRight_toRightOf="parent"
             map:layout_constraintBottom_toTopOf="@id/layout_login"
             android:layout_margin="5dp"
             android:indeterminateTint="@color/colorBase"
-            android:visibility="gone"/>
+            android:visibility="invisible"/>
 
     </android.support.constraint.ConstraintLayout>
 

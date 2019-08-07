@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.georealm.adapters.CharacterCardDataAdapter;
-import com.example.georealm.data.CharacterData;
+import com.example.georealm.data.CharacterCardData;
 import com.example.georealm.helper.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,6 +35,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import static com.example.georealm.helper.Constants.DEFAULT_ZOOM;
+import static com.example.georealm.helper.Constants.ROGUE;
+import static com.example.georealm.helper.Constants.SORCERER;
+import static com.example.georealm.helper.Constants.SWORDSMAN;
 
 public class ChooseCharacterActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -126,8 +129,8 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
                 Intent intent = new Intent(ChooseCharacterActivity.this, GameActivity.class);
                 intent.putExtra("username", username);
                 intent.putExtra("character_name", button_play.getTag(R.string.character_name).toString());
-                intent.putExtra("character_class", button_play.getTag(R.string.character_class).toString());
-                intent.putExtra("character_subclass", button_play.getTag(R.string.character_subclass).toString());
+                intent.putExtra("character_class", Integer.parseInt(button_play.getTag(R.string.character_class).toString()));
+                intent.putExtra("character_subclass", Integer.parseInt(button_play.getTag(R.string.character_subclass).toString()));
                 intent.putExtra("character_level", Integer.parseInt(button_play.getTag(R.string.character_level).toString()));
                 startActivity(intent);
             }
@@ -151,7 +154,7 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
 
-                        CharacterData character_data = document.toObject(CharacterData.class);
+                        CharacterCardData character_data = document.toObject(CharacterCardData.class);
                         ((CharacterCardDataAdapter)character_card_adapter).addCharacterToList(character_card_adapter.getItemCount(), character_data);
                     }
 
@@ -211,41 +214,33 @@ public class ChooseCharacterActivity extends FragmentActivity implements OnMapRe
                 enableCommands(false);
 
                 final String character_name = data.getStringExtra("character_name");
-                int subclass = data.getIntExtra("character_class", -1);
-                String character_class = "";
-                String character_subclass = "";
-                int character_level = 1;
+                int character_subclass = data.getIntExtra("character_class", 1);
+                int character_class = 1;
 
-                switch (subclass) {
+                switch (character_subclass) {
 
                     case Constants.BERSERKER:
-                        character_class = "swordsman";
-                        character_subclass = "berserker";
+                        character_class = SWORDSMAN;
                         break;
                     case Constants.PALADIN:
-                        character_class = "swordsman";
-                        character_subclass = "paladin";
+                        character_class = SWORDSMAN;
                         break;
                     case Constants.PYROMANCER:
-                        character_class = "sorcerer";
-                        character_subclass = "pyromancer";
+                        character_class = SORCERER;
                         break;
                     case Constants.ICEBOUND:
-                        character_class = "sorcerer";
-                        character_subclass = "icebound";
+                        character_class = SORCERER;
                         break;
                     case Constants.ASSASSIN:
-                        character_class = "rogue";
-                        character_subclass = "assassin";
+                        character_class = ROGUE;
                         break;
                     case Constants.SHADOW:
-                        character_class = "rogue";
-                        character_subclass = "shadow";
+                        character_class = ROGUE;
                         break;
                 }
 
-                final CharacterData character_data = new CharacterData(
-                        character_name, character_class, character_subclass, character_level);
+                final CharacterCardData character_data = new CharacterCardData(
+                        character_name, character_class, character_subclass);
 
                 database.collection("users").document(username)
                         .collection("characters")
