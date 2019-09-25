@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorTint">
@@ -55,7 +55,7 @@
             android:drawablePadding="7dp"
             android:enabled="false"/>
 
-        <android.support.constraint.Guideline
+        <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -149,6 +149,6 @@
             android:indeterminateTint="@color/colorBase"
             android:visibility="invisible"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

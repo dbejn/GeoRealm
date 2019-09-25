@@ -1,15 +1,14 @@
 package com.example.georealm.adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,12 +39,17 @@ public class SkillCardDataAdapter extends RecyclerView.Adapter<SkillCardDataAdap
         character = chara;
     }
 
-    private void deselectCurrentLayout() {
+    public void deselectCurrentLayout() {
 
         if (selected_holder != null) {
 
             selected_holder.layout_skill_card.setForeground(null);
         }
+    }
+
+    public void updateCharacter(CharacterData chara) {
+
+        character = chara;
     }
 
     private void setUpColors(SkillCardViewHolder holder, int color) {
@@ -101,14 +105,17 @@ public class SkillCardDataAdapter extends RecyclerView.Adapter<SkillCardDataAdap
             case Constants.SWORDSMAN:
                 setUpColors(skillCardViewHolder, R.color.colorSword);
                 skillCardViewHolder.layout_skill_card.setBackgroundResource(R.drawable.choose_character_swordsman_card);
+                skillCardViewHolder.layout_skill_description.setBackgroundResource(R.drawable.swordsman_skill_gradient);
                 break;
             case Constants.SORCERER:
                 setUpColors(skillCardViewHolder, R.color.colorHat);
                 skillCardViewHolder.layout_skill_card.setBackgroundResource(R.drawable.choose_character_sorcerer_card);
+                skillCardViewHolder.layout_skill_description.setBackgroundResource(R.drawable.sorcerer_skill_gradient);
                 break;
             case Constants.ROGUE:
                 setUpColors(skillCardViewHolder, R.color.colorDagger);
                 skillCardViewHolder.layout_skill_card.setBackgroundResource(R.drawable.choose_character_rogue_card);
+                skillCardViewHolder.layout_skill_description.setBackgroundResource(R.drawable.rogue_skill_gradient);
                 break;
         }
 
@@ -127,7 +134,6 @@ public class SkillCardDataAdapter extends RecyclerView.Adapter<SkillCardDataAdap
                 else if ((i % 2 == 1 && character.getSkills().contains(i + 1)) || (i % 2 == 0 && character.getSkills().contains(i - 1))) {
 
                     skillCardViewHolder.skill_status.setText(context.getString(R.string.unavailable));
-                    skillCardViewHolder.layout_skill_card.setBackgroundResource(R.drawable.all_rounded_rec_disabled);
                 }
                 else {
 
@@ -138,18 +144,15 @@ public class SkillCardDataAdapter extends RecyclerView.Adapter<SkillCardDataAdap
 
                             if (selected != position) {
 
+                                selected = position;
+
                                 deselectCurrentLayout();
                                 skillCardViewHolder.layout_skill_card.setForeground(context.getDrawable(R.drawable.select));
                                 selected_holder = skillCardViewHolder;
 
-                                if (selected == -1) {
-
-                                    button_level_up_skill.setBackgroundResource(R.drawable.top_rounded_rec_trans);
-                                    button_level_up_skill.setEnabled(true);
-                                    button_level_up_skill.setTag(position);
-                                }
-
-                                selected = position;
+                                button_level_up_skill.setBackgroundResource(R.drawable.top_rounded_rec_trans);
+                                button_level_up_skill.setEnabled(true);
+                                button_level_up_skill.setTag(selected);
                             }
                         }
                     });
@@ -160,6 +163,7 @@ public class SkillCardDataAdapter extends RecyclerView.Adapter<SkillCardDataAdap
 
             skillCardViewHolder.skill_status.setText(context.getString(R.string.level_needed, Math.round(i / 2.0f) + (i - 1) / 2));
             skillCardViewHolder.layout_skill_card.setBackgroundResource(R.drawable.all_rounded_rec_disabled);
+            skillCardViewHolder.layout_skill_description.setVisibility(View.GONE);
         }
     }
 

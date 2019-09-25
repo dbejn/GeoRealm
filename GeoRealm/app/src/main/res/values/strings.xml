@@ -9,6 +9,9 @@
     <string name="title_activity_choose_character">ChooseCharacter</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_shop">ShopActivity</string>
+    <string name="title_activity_character">CharacterActivity</string>
+    <string name="title_activity_interact">InteractActivity</string>
 
     <string name="quit">quit</string>
     <string name="login_fierce_warrior">login, fierce warrior</string>
@@ -16,6 +19,7 @@
     <string name="register">register</string>
     <string name="logout">logout</string>
     <string name="password">password</string>
+    <string name="password_optional">password, optional</string>
     <string name="username">username</string>
     <string name="email">email</string>
     <string name="no_account">don\'t have an account?</string>
@@ -30,8 +34,8 @@
     <string name="menu">menu</string>
     <string name="change_character">change character</string>
     <string name="character">character</string>
+    <string name="user">user</string>
     <string name="account">account</string>
-    <string name="title_activity_character">CharacterActivity</string>
     <string name="skills">skills</string>
     <string name="inventory">inventory</string>
     <string name="create">create</string>
@@ -81,6 +85,8 @@
     <string name="best_character_score">best character score</string>
     <string name="view_character">view character</string>
     <string name="delete_character">delete character</string>
+    <string name="view_friend">view friend</string>
+    <string name="remove_friend">remove friend</string>
     <string name="view_account">view account</string>
     <string name="challenge_to_duel">challenge to duel</string>
     <string name="last_seen">last seen</string>
@@ -107,6 +113,9 @@
     <string name="marker_gem_title">gem</string>
     <string name="marker_gem_info">hold to collect</string>
     <string name="marker_gem_xp">+5 xp</string>
+    <string name="marker_shop_title">shop</string>
+    <string name="marker_shop_info">click to enter</string>
+    <string name="marker_character_info">click for info</string>
     <string name="stats">stats</string>
     <string name="achievements">achievements</string>
     <string name="info_experience">%1$d/%2$d</string>
@@ -116,4 +125,29 @@
     <string name="available">available</string>
     <string name="unavailable">unavailable</string>
     <string name="equip">equip</string>
+    <string name="integer">%1$d</string>
+    <string name="brackets_integer">(%1$d)</string>
+    <string name="buy">buy</string>
+    <string name="sell">sell</string>
+    <string name="buy_cost">buy (%1$d gems)</string>
+    <string name="sell_cost">sell (%1$d gems)</string>
+    <string name="health_potion">health potion</string>
+    <string name="health_potion_desc">restores 50 + 5 per level health points</string>
+    <string name="mana_potion">mana potion</string>
+    <string name="mana_potion_desc">restores 35 + 7 per level mana points</string>
+    <string name="stamina_potion">stamina potion</string>
+    <string name="stamina_potion_desc">restores 35 + 7 per level stamina points</string>
+    <string name="add_friend">add friend</string>
+    <string name="duel">duel</string>
+    <string name="make_friend_request">make friend request</string>
+    <string name="cancel_friend_request">cancel friend request</string>
+    <string name="accept_friend_request">accept friend request</string>
+    <string name="cancel_accept_friend_request">cancel accept</string>
+    <string name="waiting_for_response">waiting for other player\'s response&#8230;</string>
+    <string name="or">or</string>
+    <string name="make_duel_request">challenge to a duel</string>
+    <string name="cancel_duel_request">cancel challenge</string>
+    <string name="accept_duel_request">accept challenge</string>
+    <string name="cancel_accept_duel_request">cancel accept</string>
+    <string name="position">%1$d.</string>
 </resources>

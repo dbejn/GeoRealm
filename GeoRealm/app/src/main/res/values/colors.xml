@@ -19,4 +19,6 @@
     <color name="colorDelete">#A82525</color>
 
     <color name="colorMarkerGem">#FF2A00</color>
+    <color name="colorMarkerShop">#FF8000</color>
+    <color name="colorMarkerCharacter">#212D24</color>
 </resources>

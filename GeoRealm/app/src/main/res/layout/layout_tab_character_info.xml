@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/icon_health"
-                android:src="@drawable/ic_gem"
+                android:src="@drawable/ic_health"
                 android:tint="@color/colorBase"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"/>
@@ -157,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/icon_resource"
-                android:src="@drawable/ic_diamond"
+                android:src="@drawable/ic_mana"
                 android:tint="@color/colorBase"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"/>
@@ -196,7 +196,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/icon_attack"
-                android:src="@drawable/ic_diamond"
+                android:src="@drawable/ic_sword"
                 android:tint="@color/colorBase"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"/>
@@ -235,7 +235,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/icon_defence"
-                android:src="@drawable/ic_diamond"
+                android:src="@drawable/ic_defence"
                 android:tint="@color/colorBase"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"/>
@@ -274,7 +274,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/icon_magic"
-                android:src="@drawable/ic_diamond"
+                android:src="@drawable/ic_hat"
                 android:tint="@color/colorBase"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"/>
@@ -313,7 +313,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/icon_resistance"
-                android:src="@drawable/ic_diamond"
+                android:src="@drawable/ic_magic_res"
                 android:tint="@color/colorBase"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"/>
@@ -410,7 +410,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/icon_diamond"
-                android:src="@drawable/ic_diamond"
+                android:src="@drawable/ic_gem"
                 android:tint="@color/colorBase"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"/>
@@ -449,7 +449,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/icon_monster"
-                android:src="@drawable/ic_diamond"
+                android:src="@drawable/ic_ghost"
                 android:tint="@color/colorBase"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"/>
@@ -488,7 +488,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/icon_duels_won"
-                android:src="@drawable/ic_diamond"
+                android:src="@drawable/ic_duel"
                 android:tint="@color/colorBase"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"/>

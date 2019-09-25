@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/marker_character_background">
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginTop="7dp"
+        android:text="bejn"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:textColor="@color/colorBase"/>
+
+    <LinearLayout
+        android:id="@+id/marker_character_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/username"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="7dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp">
+
+        <ImageView
+            android:id="@+id/character_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_hat"
+            android:tint="@color/colorBase"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/character_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="lich bane"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/colorBase"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/character_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/marker_character_name"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
+        android:text="@string/name_level"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:textColor="@color/colorBase"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/character_info"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
+        android:text="@string/marker_character_info"
+        android:textStyle="italic"
+        android:textSize="12sp"
+        android:textColor="@color/colorBase"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

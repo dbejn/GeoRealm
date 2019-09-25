@@ -1,13 +1,14 @@
 package com.example.georealm;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,11 +27,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import static com.example.georealm.helper.Constants.ASSASSIN;
@@ -42,10 +41,7 @@ import static com.example.georealm.helper.Constants.ICEBOUND_SKILL_NAMES;
 import static com.example.georealm.helper.Constants.ICEBOUND_SKILL_STATS;
 import static com.example.georealm.helper.Constants.PALADIN;
 import static com.example.georealm.helper.Constants.PYROMANCER;
-import static com.example.georealm.helper.Constants.ROGUE;
 import static com.example.georealm.helper.Constants.SHADOW;
-import static com.example.georealm.helper.Constants.SORCERER;
-import static com.example.georealm.helper.Constants.SWORDSMAN;
 
 public class CharacterActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -72,7 +68,6 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
     private CharacterData character;
     private ProgressBar progress_bar;
     private Button button_back;
-    private int work_finished = 0;
 
     // INFO
     private ImageView info_icon;
@@ -91,8 +86,12 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
     private TextView info_duels_won;
     private TextView info_score;
     private TextView info_resource_type;
+    private ImageView info_icon_resource;
 
     // SKILLS
+    private TextView character_level;
+    private TextView leveling_points;
+    private ImageView level_image;
     private Button button_learn_skill;
     private RecyclerView skill_list;
     private RecyclerView.Adapter skill_card_adapter;
@@ -127,8 +126,6 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
         layout_character_skills = findViewById(R.id.layout_character_skills);
         layout_character_inventory = findViewById(R.id.layout_character_inventory);
 
-        current_view = layout_character_info;
-
         button_info = findViewById(R.id.tab_button_info);
         button_skills = findViewById(R.id.tab_button_skills);
         button_inventory = findViewById(R.id.tab_button_inventory);
@@ -137,6 +134,7 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
         marker_skills = findViewById(R.id.tab_marker_skills);
         marker_inventory = findViewById(R.id.tab_marker_inventory);
 
+        current_view = layout_character_info;
         current_button = button_info;
         current_marker = marker_info;
 
@@ -174,6 +172,8 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onClick(View v) {
 
+                /*Intent return_intent = new Intent();
+                setResult(RESULT_OK, return_intent);*/
                 finish();
             }
         });
@@ -188,6 +188,8 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
                 character = (Icebound) getIntent().getParcelableExtra("character");
                 break;
         }
+
+        button_info.setText(character.getCharacter_name());
 
         setCharacterInfoTab();
         setCharacterSkillsTab();
@@ -253,53 +255,68 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
         info_duels_won = findViewById(R.id.character_info_duels_won);
         info_score = findViewById(R.id.character_info_score);
         info_resource_type = findViewById(R.id.text_resource);
+        info_icon_resource = findViewById(R.id.icon_resource);
 
         int level = character.getCharacter_level();
-        info_level.setText(level);
+        info_level.setText(getString(R.string.integer, level));
         info_experience.setText(getString(R.string.info_experience,
                 character.getExperience(), (int)(1000 * Math.pow(2.5, level - 1))));
-        info_health.setText(character.getHealth());
-        info_resource.setText(character.getResource());
-        info_attack.setText(character.getAttack_damage());
-        info_defence.setText(character.getDefence());
-        info_magic.setText(character.getMagic_damage());
-        info_magic_res.setText(character.getMagic_resistance());
-        info_gems_collected.setText(character.getGems_collected());
-        info_gems_spent.setText(character.getGems_spent());
-        info_monsters_slain.setText(character.getMonsters_slain());
+        info_health.setText(getString(R.string.integer, character.getHealth()));
+        info_resource.setText(getString(R.string.integer, character.getResource()));
+        info_attack.setText(getString(R.string.integer, character.getAttack_damage()));
+        info_defence.setText(getString(R.string.integer, character.getDefence()));
+        info_magic.setText(getString(R.string.integer, character.getMagic_damage()));
+        info_magic_res.setText(getString(R.string.integer, character.getMagic_resistance()));
+        info_gems_collected.setText(getString(R.string.integer, character.getGems_collected()));
+        info_gems_spent.setText(getString(R.string.integer, character.getGems_spent()));
+        info_monsters_slain.setText(getString(R.string.integer, character.getMonsters_slain()));
         info_duels_won.setText(getString(R.string.info_duels,
                 character.getDuels_won(), character.getDuels_fought()));
-        info_score.setText(character.getScore());
+        info_score.setText(getString(R.string.integer, character.getScore()));
+
+        level_image = findViewById(R.id.level_image);
 
         switch (character.getCharacter_subclass()) {
 
             case BERSERKER:
                 info_icon.setImageResource(R.drawable.ic_sword);
+                level_image.setImageResource(R.drawable.ic_sword);
+                info_icon_resource.setImageResource(R.drawable.ic_stamina);
                 info_resource_type.setText(getString(R.string.stamina));
                 info_subclass.setText(getString(R.string.berserker));
                 break;
             case PALADIN:
                 info_icon.setImageResource(R.drawable.ic_sword);
+                level_image.setImageResource(R.drawable.ic_sword);
+                info_icon_resource.setImageResource(R.drawable.ic_mana);
                 info_resource_type.setText(getString(R.string.stamina));
                 info_subclass.setText(getString(R.string.paladin));
                 break;
             case PYROMANCER:
                 info_icon.setImageResource(R.drawable.ic_hat);
+                level_image.setImageResource(R.drawable.ic_hat);
+                info_icon_resource.setImageResource(R.drawable.ic_mana);
                 info_resource_type.setText(getString(R.string.mana));
                 info_subclass.setText(getString(R.string.pyromancer));
                 break;
             case ICEBOUND:
                 info_icon.setImageResource(R.drawable.ic_hat);
+                level_image.setImageResource(R.drawable.ic_hat);
+                info_icon_resource.setImageResource(R.drawable.ic_mana);
                 info_resource_type.setText(getString(R.string.mana));
                 info_subclass.setText(getString(R.string.icebound));
                 break;
             case ASSASSIN:
                 info_icon.setImageResource(R.drawable.ic_dagger);
+                level_image.setImageResource(R.drawable.ic_dagger);
+                info_icon_resource.setImageResource(R.drawable.ic_stamina);
                 info_resource_type.setText(getString(R.string.stamina));
                 info_subclass.setText(getString(R.string.assassin));
                 break;
             case SHADOW:
                 info_icon.setImageResource(R.drawable.ic_dagger);
+                level_image.setImageResource(R.drawable.ic_dagger);
+                info_icon_resource.setImageResource(R.drawable.ic_mana);
                 info_resource_type.setText(getString(R.string.mana));
                 info_subclass.setText(getString(R.string.shadow));
                 break;
@@ -308,7 +325,14 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
 
     private void setCharacterSkillsTab() {
 
+        character_level = findViewById(R.id.level);
+        character_level.setText(getString(R.string.integer, character.getCharacter_level()));
+        leveling_points = findViewById(R.id.leveling_points);
+        leveling_points.setText(getString(R.string.integer, character.getLeveling_points()));
+
         layout_manager = new LinearLayoutManager(CharacterActivity.this);
+        skill_list = findViewById(R.id.skill_list);
+        skill_list.setHasFixedSize(true);
         skill_list.setLayoutManager(layout_manager);
         String[] skill_names = {};
         String[] skill_descriptions = {};
@@ -320,8 +344,10 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
 
                 progress_bar.setVisibility(View.VISIBLE);
 
+                character.getSkills().add((int)button_learn_skill.getTag());
+
                 DocumentReference character_doc = database.collection("characters").document(character.getCharacter_name());
-                character_doc.update("skills", FieldValue.arrayUnion((int)button_learn_skill.getTag()))
+                character_doc.update("skills", character.getSkills())
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -329,11 +355,14 @@ public class CharacterActivity extends FragmentActivity implements OnMapReadyCal
                                 if (task.isSuccessful()) {
 
                                     Toast.makeText(CharacterActivity.this, "Skill learned", Toast.LENGTH_SHORT).show();
-                                    character.getSkills().add((int)button_learn_skill.getTag());
+                                    ((SkillCardDataAdapter)skill_card_adapter).updateCharacter(character);
+                                    ((SkillCardDataAdapter)skill_card_adapter).deselectCurrentLayout();
+                                    skill_list.setAdapter(skill_card_adapter);
                                 }
                                 else {
 
                                     Toast.makeText(CharacterActivity.this, "Failed to learn skill, please try again", Toast.LENGTH_SHORT).show();
+                                    character.getSkills().remove(character.getSkills().size() - 1);
                                 }
 
                                 progress_bar.setVisibility(View.GONE);

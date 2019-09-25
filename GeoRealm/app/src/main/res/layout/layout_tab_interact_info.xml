@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_info"
+    android:layout_marginTop="25dp"
+    android:scrollbars="none"
+    android:scrollIndicators="top|bottom"
+    android:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="50dp"
+        android:paddingTop="25dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/character_info_icon"
+                android:src="@drawable/ic_hat"
+                android:tint="@color/colorBase"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/character_info_subclass"
+                android:layout_toEndOf="@+id/character_info_icon"
+                android:layout_marginStart="10dp"
+                android:text="@string/icebound"
+                android:textStyle="italic|bold"
+                android:textSize="30sp"
+                android:textColor="@color/colorBase"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_level"
+                android:text="@string/level"
+                android:textStyle="italic"
+                android:textSize="18sp"
+                android:textColor="@color/colorBase"
+                android:layout_alignStart="@+id/character_info_subclass"
+                android:layout_below="@+id/character_info_subclass"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/character_info_level"
+                android:layout_toEndOf="@+id/text_level"
+                android:layout_alignBottom="@+id/text_level"
+                android:text="1"
+                android:textStyle="italic|bold"
+                android:textSize="20sp"
+                android:textColor="@color/colorBase"
+                android:layout_marginStart="10dp"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/label_character"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/character"
+            android:textStyle="italic|bold"
+            android:textSize="22sp"
+            android:textColor="@color/colorDisabled"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="35dp"
+            android:layout_gravity="start"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDisabled"
+            android:layout_marginStart="35dp"
+            android:layout_gravity="start"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/icon_gem"
+                android:src="@drawable/ic_gem"
+                android:tint="@color/colorBase"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_gems"
+                android:text="@string/gems_collected"
+                android:textStyle="italic"
+                android:textSize="20sp"
+                android:textColor="@color/colorBase"
+                android:layout_toEndOf="@+id/icon_gem"
+                android:paddingBottom="7dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/character_info_gems"
+                android:layout_toEndOf="@+id/text_gems"
+                android:text="4"
+                android:textStyle="italic|bold"
+                android:textSize="20sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorBase"
+                android:paddingBottom="7dp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/icon_diamond"
+                android:src="@drawable/ic_diamond"
+                android:tint="@color/colorBase"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_gems_spent"
+                android:text="@string/gems_spent"
+                android:textStyle="italic"
+                android:textSize="20sp"
+                android:textColor="@color/colorBase"
+                android:layout_toEndOf="@+id/icon_diamond"
+                android:paddingBottom="7dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/character_info_gems_spent"
+                android:layout_toEndOf="@+id/text_gems_spent"
+                android:text="0"
+                android:textStyle="italic|bold"
+                android:textSize="20sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorBase"
+                android:paddingBottom="7dp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/icon_monster"
+                android:src="@drawable/ic_diamond"
+                android:tint="@color/colorBase"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_monster_slain"
+                android:text="@string/monsters_slain"
+                android:textStyle="italic"
+                android:textSize="20sp"
+                android:textColor="@color/colorBase"
+                android:layout_toEndOf="@+id/icon_monster"
+                android:paddingBottom="7dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/character_info_monsters_slain"
+                android:layout_toEndOf="@+id/text_monster_slain"
+                android:text="0"
+                android:textStyle="italic|bold"
+                android:textSize="20sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorBase"
+                android:paddingBottom="7dp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/icon_duels_won"
+                android:src="@drawable/ic_diamond"
+                android:tint="@color/colorBase"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_duels_won"
+                android:text="@string/duels_won"
+                android:textStyle="italic"
+                android:textSize="20sp"
+                android:textColor="@color/colorBase"
+                android:layout_toEndOf="@+id/icon_duels_won"
+                android:paddingBottom="7dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/character_info_duels_won"
+                android:layout_toEndOf="@+id/text_duels_won"
+                android:text="0/0"
+                android:textStyle="italic|bold"
+                android:textSize="20sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorBase"
+                android:paddingBottom="7dp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/icon_highscore"
+                android:src="@drawable/ic_highscore"
+                android:tint="@color/colorBase"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_score"
+                android:text="@string/score"
+                android:textStyle="italic"
+                android:textSize="24sp"
+                android:textColor="@color/colorBase"
+                android:layout_toEndOf="@+id/icon_highscore"
+                android:paddingBottom="3dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/character_info_score"
+                android:layout_toEndOf="@+id/text_score"
+                android:text="23"
+                android:textStyle="italic|bold"
+                android:textSize="24sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginStart="10dp"
+                android:paddingBottom="3dp"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/label_achievements"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user"
+            android:textStyle="italic|bold"
+            android:textSize="22sp"
+            android:textColor="@color/colorDisabled"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="35dp"
+            android:layout_gravity="start"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDisabled"
+            android:layout_marginStart="35dp"
+            android:layout_gravity="start"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:id="@+id/info_username"
+            android:layout_marginTop="25dp"
+            android:text="bejn"
+            android:textStyle="italic|bold"
+            android:textSize="30sp"
+            android:textColor="@color/colorBase"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_icon_highscore"
+                android:src="@drawable/ic_highscore"
+                android:tint="@color/colorBase"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_text_score"
+                android:text="@string/score"
+                android:textStyle="italic"
+                android:textSize="24sp"
+                android:textColor="@color/colorBase"
+                android:layout_toEndOf="@+id/user_icon_highscore"
+                android:paddingBottom="3dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/info_user_score"
+                android:layout_toEndOf="@+id/user_text_score"
+                android:text="23"
+                android:textStyle="italic|bold"
+                android:textSize="24sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginStart="10dp"
+                android:paddingBottom="3dp"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

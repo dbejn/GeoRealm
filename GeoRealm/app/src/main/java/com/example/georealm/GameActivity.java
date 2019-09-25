@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -45,11 +46,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Source;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.georealm.helper.Constants.CREATE_MARKERS_URL;
@@ -72,7 +77,11 @@ import static com.example.georealm.helper.Constants.SORCERER;
 import static com.example.georealm.helper.Constants.SWORDSMAN;
 import static com.example.georealm.helper.Functions.arrayContains;
 
-public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWindowLongClickListener, OnMapReadyCallback {
+public class GameActivity extends FragmentActivity
+        implements GoogleMap.OnInfoWindowLongClickListener, GoogleMap.OnInfoWindowClickListener,
+        GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
+
+    private static final int SHOP_REQUEST = 1;
 
     // MAPS
     private GoogleMap map;
@@ -89,6 +98,8 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
     private static final String KEY_LOCATION = "location";
 
     private Marker my_marker;
+    private List<Marker> player_markers;
+    private Marker last_opened_marker;
 
     // UI
     private Button button_menu;
@@ -119,7 +130,7 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
 
     // CLOUD FUNCTIONS
     private RequestQueue request_queue;
-    private StringRequest string_request;
+    private StringRequest gem_markers_string_request;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +156,8 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        player_markers = new ArrayList<>();
 
         location_callback = new LocationCallback() {
 
@@ -172,6 +185,16 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
                                 new LatLng(last_known_location.getLatitude(),
                                         last_known_location.getLongitude()), map.getCameraPosition().zoom));*/
                     }
+
+                    DocumentReference user_doc = database.collection("users").document(username);
+                    user_doc.update("latitude", last_known_location.getLatitude(),
+                            "longitude", last_known_location.getLongitude());
+
+                    for (Marker marker : player_markers) {
+
+                        marker.remove();
+                    }
+                    getCharacterMarkers();
                 }
             }
         };
@@ -182,6 +205,13 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
         layout_info = findViewById(R.id.layout_info);
         button_quit = findViewById(R.id.button_quit);
         button_quit.setVisibility(View.INVISIBLE);
+        button_quit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        });
 
         layout_menu = findViewById(R.id.layout_menu);
         layout_menu.setVisibility(View.INVISIBLE);
@@ -238,6 +268,17 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
         button_change_character = findViewById(R.id.button_change_character);
 
         button_highscore = findViewById(R.id.button_highscore);
+        button_highscore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(GameActivity.this, HighscoreActivity.class);
+                intent.putExtra("latitude", my_marker.getPosition().latitude);
+                intent.putExtra("longitude", my_marker.getPosition().longitude);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
 
         text_character = findViewById(R.id.text_character);
         class_image = findViewById(R.id.class_image);
@@ -280,9 +321,6 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
 
                                     setClassImage(character_class);
                                     text_character.setText(getString(R.string.name_level, character_name, character_level));
-
-                                    Toast.makeText(GameActivity.this,
-                                            "Welcome to the GeoRealm", Toast.LENGTH_SHORT).show();
                                 }
                                 else {
 
@@ -309,9 +347,6 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
 
                         setClassImage(character_class);
                         text_character.setText(getString(R.string.name_level, character_name, character_level));
-
-                        Toast.makeText(GameActivity.this,
-                                "Welcome to the GeoRealm", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else {
@@ -324,10 +359,234 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
             }
         });
 
+        setPlaying();
+        changeUserStatus(true);
 
-        // CLOUD FUNCTIONS - MARKERS
+
+        // CLOUD FUNCTIONS - GEM MARKERS
         request_queue = Volley.newRequestQueue(this);
-        string_request = new StringRequest(Request.Method.POST, CREATE_MARKERS_URL, new Response.Listener<String>() {
+        getGemMarkers();
+
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        if (map != null) {
+
+            outState.putParcelable(KEY_LOCATION, last_known_location);
+            super.onSaveInstanceState(outState);
+        }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        map = googleMap;
+
+        try {
+
+            map.setMapStyle(MapStyleOptions
+                    .loadRawResourceStyle(this, R.raw.google_maps_style));
+
+            MarkerInfoWindowAdapter marker_adapter =
+                    new MarkerInfoWindowAdapter(GameActivity.this);
+            map.setInfoWindowAdapter(marker_adapter);
+
+            map.setOnInfoWindowLongClickListener(this);
+            map.setOnInfoWindowClickListener(this);
+            map.setOnMarkerClickListener(this);
+        }
+        catch (Resources.NotFoundException e) {
+
+            // exception
+        }
+
+        getLocationPermission();
+
+        updateLocationUI();
+
+        getDeviceLocation();
+
+        // SHOP MARKERS
+        getShopMarkers();
+
+        // CHARACTER MARKERS
+        // getCharacterMarkers();
+    }
+
+    private void getLocationPermission() {
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            location_permission_granted = true;
+        }
+        else {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    private void updateLocationUI() {
+
+        if (map == null) {
+
+            return;
+        }
+        else {
+
+            // map.getUiSettings().setAllGesturesEnabled(false);
+            map.getUiSettings().setZoomGesturesEnabled(true);
+            map.getUiSettings().setRotateGesturesEnabled(true);
+            map.getUiSettings().setCompassEnabled(false);
+            // map.setMinZoomPreference(MIN_ZOOM);
+            map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+                @Override
+                public void onCameraIdle() {
+
+                    /*CameraUpdate animation = CameraUpdateFactory
+                            .newLatLngZoom(new LatLng(last_known_location.getLatitude(),
+                                    last_known_location.getLongitude()),
+                                    map.getCameraPosition().zoom);
+                    map.animateCamera(animation);*/
+                }
+            });
+        }
+
+        try {
+
+            if (location_permission_granted) {
+
+                // map.setMyLocationEnabled(true);
+                // map.getUiSettings().setMyLocationButtonEnabled(true);
+            }
+            else {
+
+                // map.setMyLocationEnabled(false);
+                // map.getUiSettings().setMyLocationButtonEnabled(false);
+                last_known_location = null;
+                getLocationPermission();
+            }
+        }
+        catch (SecurityException e) {
+
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void getDeviceLocation() {
+
+        try {
+
+            if (location_permission_granted) {
+
+                Task<Location> location_result = fused_location_provider_client.getLastLocation();
+                location_result.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+
+                            last_known_location = task.getResult();
+                            if (last_known_location != null) {
+
+                                map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(last_known_location.getLatitude(),
+                                                last_known_location.getLongitude()), DEFAULT_ZOOM));
+
+                                my_marker = map.addMarker(new MarkerOptions()
+                                        .position(new LatLng(last_known_location.getLatitude(), last_known_location.getLongitude()))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.my_marker)));
+                                my_marker.setTitle("player");
+
+                                DocumentReference user_doc = database.collection("users").document(username);
+                                user_doc.update("latitude", last_known_location.getLatitude(),
+                                        "longitude", last_known_location.getLongitude());
+
+                                map.addMarker(new MarkerOptions()
+                                        .title("test_marker")
+                                        .position(new LatLng(last_known_location.getLatitude(), last_known_location.getLongitude() - 0.0001f))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.my_marker)));
+                            }
+                            else {
+
+                                Toast.makeText(GameActivity.this, "Error fetching location", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }
+                        else {
+
+                            Toast.makeText(GameActivity.this, "Error fetching location", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        if (last_opened_marker != null) {
+
+            last_opened_marker.hideInfoWindow();
+
+            if (last_opened_marker.equals(marker)) {
+
+                last_opened_marker = null;
+
+                return true;
+            }
+        }
+
+        marker.showInfoWindow();
+        last_opened_marker = marker;
+
+        return true;
+    }
+
+    private void setPlaying() {
+
+        List<Object> playing = new ArrayList<>();
+        playing.add(character_name);
+        playing.add(character_level);
+        playing.add(character_class);
+        playing.add(character_subclass);
+
+        DocumentReference user_ref = database.collection("users").document(username);
+        user_ref.update("playing", playing);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        location_permission_granted = false;
+        switch (requestCode) {
+
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    location_permission_granted = true;
+                }
+            }
+        }
+
+        updateLocationUI();
+    }
+
+    private void getGemMarkers(){
+
+        gem_markers_string_request = new StringRequest(Request.Method.POST, CREATE_MARKERS_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -434,171 +693,88 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
                 finish();
             }
         });
-        request_queue.add(string_request);
+        request_queue.add(gem_markers_string_request);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    private void getShopMarkers() {
 
-        if (map != null) {
+        // elfak
+        Marker el_marker = map.addMarker(new MarkerOptions()
+                .position(new LatLng(43.331323, 21.892429))
+                .infoWindowAnchor(0.5f, 0.75f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shop_marker)));
+        el_marker.setTitle("shop");
 
-            outState.putParcelable(KEY_LOCATION, last_known_location);
-            super.onSaveInstanceState(outState);
-        }
+        // cele kula
+        Marker ce_marker = map.addMarker(new MarkerOptions()
+                .position(new LatLng(43.3122823, 21.9239165))
+                .infoWindowAnchor(0.5f, 0.75f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shop_marker)));
+        ce_marker.setTitle("shop");
+
+        // cair
+        Marker ca_marker = map.addMarker(new MarkerOptions()
+                .position(new LatLng(43.3150536, 21.9086836))
+                .infoWindowAnchor(0.5f, 0.75f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shop_marker)));
+        ca_marker.setTitle("shop");
+
+        // digitalni muzej
+        Marker di_marker = map.addMarker(new MarkerOptions()
+                .position(new LatLng(43.323749, 21.895117))
+                .infoWindowAnchor(0.5f, 0.75f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shop_marker)));
+        di_marker.setTitle("shop");
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
+    private void getCharacterMarkers() {
 
-        map = googleMap;
+        database.collection("users")
+                .whereGreaterThan("latitude", last_known_location.getLatitude() - 1.0f)
+                .whereLessThan("latitude", last_known_location.getLatitude() + 1.0f)
+                .whereEqualTo("status", "online")
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-        try {
+                if (task.isSuccessful()) {
 
-            map.setMapStyle(MapStyleOptions
-                    .loadRawResourceStyle(this, R.raw.google_maps_style));
+                    player_markers.clear();
 
-            MarkerInfoWindowAdapter marker_adapter =
-                    new MarkerInfoWindowAdapter(GameActivity.this);
-            map.setInfoWindowAdapter(marker_adapter);
+                    for (QueryDocumentSnapshot document : task.getResult()) {
 
-            map.setOnInfoWindowLongClickListener(this);
-        }
-        catch (Resources.NotFoundException e) {
+                        if (!document.getId().equals(username)) {
 
-            // exception
-        }
+                            Map<String, Object> document_map = document.getData();
+                            ArrayList<Object> playing = (ArrayList<Object>) document_map.get("playing");
 
-        getLocationPermission();
+                            HashMap<String, Object> hash_map = new HashMap<>();
+                            hash_map.put("name", playing.get(0));
+                            hash_map.put("subclass", playing.get(3));
+                            hash_map.put("level", playing.get(1));
+                            hash_map.put("username", document.getId());
+                            hash_map.put("user_score", document_map.get("score"));
 
-        updateLocationUI();
+                            Marker marker = map.addMarker(new MarkerOptions()
+                                    .position(new LatLng(Double.parseDouble(document_map.get("latitude").toString()),
+                                            Double.parseDouble(document_map.get("longitude").toString())))
+                                    .infoWindowAnchor(0.5f, 0.75f)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.character_marker)));
+                            marker.setTitle("character");
+                            marker.setTag(hash_map);
 
-        getDeviceLocation();
-    }
-
-    private void getLocationPermission() {
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            location_permission_granted = true;
-        }
-        else {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    private void updateLocationUI() {
-
-        if (map == null) {
-
-            return;
-        }
-        else {
-
-            // map.getUiSettings().setAllGesturesEnabled(false);
-            map.getUiSettings().setZoomGesturesEnabled(true);
-            map.getUiSettings().setRotateGesturesEnabled(true);
-            map.getUiSettings().setCompassEnabled(false);
-            // map.setMinZoomPreference(MIN_ZOOM);
-            map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-                @Override
-                public void onCameraIdle() {
-
-                    /*CameraUpdate animation = CameraUpdateFactory
-                            .newLatLngZoom(new LatLng(last_known_location.getLatitude(),
-                                    last_known_location.getLongitude()),
-                                    map.getCameraPosition().zoom);
-                    map.animateCamera(animation);*/
-                }
-            });
-        }
-
-        try {
-
-            if (location_permission_granted) {
-
-                // map.setMyLocationEnabled(true);
-                // map.getUiSettings().setMyLocationButtonEnabled(true);
-            }
-            else {
-
-                // map.setMyLocationEnabled(false);
-                // map.getUiSettings().setMyLocationButtonEnabled(false);
-                last_known_location = null;
-                getLocationPermission();
-            }
-        }
-        catch (SecurityException e) {
-
-            Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
-    private void getDeviceLocation() {
-
-        try {
-
-            if (location_permission_granted) {
-
-                Task<Location> location_result = fused_location_provider_client.getLastLocation();
-                location_result.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-
-                            last_known_location = task.getResult();
-                            if (last_known_location != null) {
-
-                                map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(last_known_location.getLatitude(),
-                                                last_known_location.getLongitude()), DEFAULT_ZOOM));
-
-                                my_marker = map.addMarker(new MarkerOptions()
-                                        .position(new LatLng(last_known_location.getLatitude(), last_known_location.getLongitude()))
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.my_marker)));
-                                my_marker.setTitle("player");
-                            }
-                            else {
-
-                                Toast.makeText(GameActivity.this, "Error fetching location", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                        }
-                        else {
-
-                            Toast.makeText(GameActivity.this, "Error fetching location", Toast.LENGTH_SHORT).show();
-                            finish();
+                            player_markers.add(marker);
                         }
                     }
-                });
-            }
-        } catch (SecurityException e) {
+                }
+                else {
 
-            Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-
-        location_permission_granted = false;
-        switch (requestCode) {
-
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    location_permission_granted = true;
+                    Toast.makeText(GameActivity.this,
+                            "Unable to retrieve other players. Please, try again.",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-
-        updateLocationUI();
+        });
     }
 
     private void setClassImage(int classs) {
@@ -657,13 +833,25 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
         }
     }
 
+    private float calculateDistance(LatLng start, LatLng end) {
+
+        Location start_location = new Location("");
+        start_location.setLatitude(start.latitude);
+        start_location.setLongitude(start.longitude);
+
+        Location end_location = new Location("");
+        end_location.setLatitude(end.latitude);
+        end_location.setLongitude(end.longitude);
+
+        return start_location.distanceTo(end_location); // meters
+    }
+
     @Override
     protected void onResume() {
 
         super.onResume();
 
         startLocationUpdates();
-        changeUserStatus(true);
     }
 
     @Override
@@ -672,44 +860,121 @@ public class GameActivity extends FragmentActivity implements GoogleMap.OnInfoWi
         super.onPause();
 
         stopLocationUpdates();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
         changeUserStatus(false);
         DocumentReference character_ref = database.collection("characters").document(character_name);
-        character_ref.set(character);
+        if (character != null)
+            character_ref.set(character);
     }
 
     @Override
     public void onInfoWindowLongClick(Marker marker) {
 
-        progress_bar.setVisibility(View.VISIBLE);
-        Toast.makeText(GameActivity.this, "Collecting gem...", Toast.LENGTH_SHORT).show();
+        if (marker.getTitle().equals("gem")){
 
-        final Marker m = marker;
+            if (calculateDistance(my_marker.getPosition(), marker.getPosition()) <= 1000.0f) {
 
-        int marker_num = Integer.parseInt(marker.getTag().toString());
+                progress_bar.setVisibility(View.VISIBLE);
+                Toast.makeText(GameActivity.this, "Collecting gem...", Toast.LENGTH_SHORT).show();
+
+                final Marker m = marker;
+
+                int marker_num = Integer.parseInt(marker.getTag().toString());
 
 
-        DocumentReference user_doc = database.collection("users").document(username);
-        user_doc.update("collected_gems", FieldValue.arrayUnion(marker_num),
-                "score", FieldValue.increment(1))
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
+                DocumentReference user_doc = database.collection("users").document(username);
+                user_doc.update("collected_gems", FieldValue.arrayUnion(marker_num),
+                        "score", FieldValue.increment(1))
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
 
-                if (task.isSuccessful()) {
+                                if (task.isSuccessful()) {
 
-                    m.remove();
-                    Toast.makeText(GameActivity.this, "+1 gem", Toast.LENGTH_SHORT).show();
-                    character.setGems_collected(character.getGems_collected() + 1);
-                    character.setScore(character.getScore() + 1);
-                    character.setExperience(character.getExperience() + 10);
-                    progress_bar.setVisibility(View.GONE);
-                }
-                else {
+                                    m.remove();
+                                    Toast.makeText(GameActivity.this, "+1 gem", Toast.LENGTH_SHORT).show();
+                                    character.setGems_collected(character.getGems_collected() + 1);
+                                    character.setScore(character.getScore() + 1);
+                                    character.setExperience(character.getExperience() + 10);
+                                    progress_bar.setVisibility(View.GONE);
+                                }
+                                else {
 
-                    Toast.makeText(GameActivity.this, "Failed to collect gem, please try again", Toast.LENGTH_SHORT).show();
-                    progress_bar.setVisibility(View.GONE);
+                                    Toast.makeText(GameActivity.this, "Failed to collect gem, please try again", Toast.LENGTH_SHORT).show();
+                                    progress_bar.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+            }
+            else {
+
+                Toast.makeText(GameActivity.this, "You need to get closer to this gem.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+        if (marker.getTitle().equals("shop")) {
+
+            if (calculateDistance(my_marker.getPosition(), marker.getPosition()) <= 1000.0f) {
+
+                Intent intent = new Intent(GameActivity.this, ShopActivity.class);
+                intent.putExtra("subclass", character_subclass);
+                intent.putExtra("character", character);
+                intent.putExtra("latitude", my_marker.getPosition().latitude);
+                intent.putExtra("longitude", my_marker.getPosition().longitude);
+                startActivityForResult(intent, SHOP_REQUEST);
+            }
+            else {
+
+                Toast.makeText(GameActivity.this, "You need to get closer to this shop.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (marker.getTitle().equals("character")) {
+
+            HashMap character_map = (HashMap) marker.getTag();
+            String name = character_map.get("name").toString();
+            String other_username = character_map.get("username").toString();
+            int user_score = Integer.parseInt(character_map.get("user_score").toString());
+
+            Intent intent = new Intent(GameActivity.this, InteractActivity.class);
+            intent.putExtra("name", name);
+            intent.putExtra("username", other_username);
+            intent.putExtra("user_score", user_score);
+            intent.putExtra("player_name", username);
+            intent.putExtra("latitude", my_marker.getPosition().latitude);
+            intent.putExtra("longitude", my_marker.getPosition().longitude);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SHOP_REQUEST) {
+
+            if (resultCode == RESULT_OK) {
+
+                switch (character_subclass) {
+
+                    case PYROMANCER:
+                        // character = (Icebound) getIntent().getParcelableExtra("character");
+                        break;
+                    case ICEBOUND:
+                        character = (Icebound) data.getParcelableExtra("character");
+                        break;
                 }
             }
-        });
+        }
     }
 }

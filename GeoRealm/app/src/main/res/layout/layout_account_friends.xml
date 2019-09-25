@@ -1,67 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="50dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="50dp"
+    android:visibility="gone"
+    android:id="@+id/layout_account_friends">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginRight="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginBottom="110dp"
-        android:layout_marginTop="10dp"
-        android:scrollbars="none"
-        android:scrollIndicators="top|bottom">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/friends_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/layout_friend_options"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="40dp">
 
-        <LinearLayout
-            android:id="@+id/layout_characters"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-            <include layout="@layout/layout_friend_card" />
-
-        </LinearLayout>
-
-    </ScrollView>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:id="@+id/layout_character_options"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_friend_options"
         android:background="@drawable/top_rounded_rec_disabled"
         android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/button_view_account"
-            android:text="@string/view_account"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_view_friend"
+            android:text="@string/view_friend"
             android:textColor="@color/colorBase"
             android:textStyle="italic"
             android:background="@android:color/transparent"
@@ -76,9 +52,9 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/button_challenge"
-            android:text="@string/challenge_to_duel"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_remove_friend"
+            android:text="@string/remove_friend"
             android:textColor="@color/colorBase"
             android:textStyle="italic"
             android:background="@android:color/transparent"
@@ -86,4 +62,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

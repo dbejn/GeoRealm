@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/marker_shop_background">
+
+    <LinearLayout
+        android:id="@+id/marker_shop_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="7dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_change"
+            android:tint="@color/colorDisabled"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/marker_shop_title"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/colorDisabled"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/marker_shop_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/marker_shop_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
+        android:text="@string/marker_shop_info"
+        android:textStyle="italic"
+        android:textSize="12sp"
+        android:textColor="@color/colorDisabled"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

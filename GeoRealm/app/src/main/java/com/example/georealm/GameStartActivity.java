@@ -7,24 +7,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.example.georealm.helper.Constants;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,12 +34,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -175,6 +171,7 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
                 intent.putExtra("latitude", latitude);
                 intent.putExtra("longitude", longitude);
                 intent.putExtra("username", user.getDisplayName());
+                intent.putExtra("type", "user");
                 startActivity(intent);
             }
         });
@@ -187,7 +184,10 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
                 Intent intent = new Intent(GameStartActivity.this, HighscoreActivity.class);
                 intent.putExtra("latitude", latitude);
                 intent.putExtra("longitude", longitude);
-                intent.putExtra("username", user.getDisplayName());
+                if (user != null)
+                    intent.putExtra("username", user.getDisplayName());
+                else
+                    intent.putExtra("username", "");
                 startActivity(intent);
             }
         });
@@ -457,8 +457,16 @@ public class GameStartActivity extends FragmentActivity implements OnMapReadyCal
                             }
                             else {
 
+                                SimpleDateFormat date_format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                                Date date = Calendar.getInstance().getTime();
+                                String string_date = date_format.format(date);
+
                                 Map<String, Object> user_document = new HashMap<>();
                                 user_document.put("score", 0);
+                                user_document.put("latitude", 0);
+                                user_document.put("longitude", 0);
+                                user_document.put("status", "offline");
+                                user_document.put("last_online", string_date);
 
                                 database.collection("users").document(user.getDisplayName()).set(user_document)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {

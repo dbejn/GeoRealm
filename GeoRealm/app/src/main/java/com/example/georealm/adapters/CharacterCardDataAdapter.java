@@ -2,10 +2,10 @@ package com.example.georealm.adapters;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,60 +132,23 @@ public class CharacterCardDataAdapter extends RecyclerView.Adapter<CharacterCard
 
                 if (selected != position) {
 
+                    selected = position;
+
                     deselectCurrentLayout();
                     characterCardViewHolder.character_card_layout.setForeground(context.getDrawable(R.drawable.select));
                     selected_holder = characterCardViewHolder;
 
-                    if (selected == -1) {
-
-                        button_play.setBackgroundResource(R.drawable.left_rounded_rec_base);
-                        button_play.setEnabled(true);
-                        button_play.setTag(R.string.character_name, characterCardViewHolder.character_card_name.getText().toString());// characterCardViewHolder.character_card_class.getText().toString()
-                        button_play.setTag(R.string.character_class, data.getCharacter_class());
-                        button_play.setTag(R.string.character_subclass, data.getCharacter_subclass());
-                        // String level = characterCardViewHolder.character_card_level.getText().toString();
-                        // level = level.substring(6, level.length() - 1);
-                        button_play.setTag(R.string.character_level, data.getCharacter_level());
-                    }
-
-                    selected = position;
+                    button_play.setBackgroundResource(R.drawable.left_rounded_rec_base);
+                    button_play.setEnabled(true);
+                    button_play.setTag(R.string.character_name, characterCardViewHolder.character_card_name.getText().toString());// characterCardViewHolder.character_card_class.getText().toString()
+                    button_play.setTag(R.string.character_class, data.getCharacter_class());
+                    button_play.setTag(R.string.character_subclass, data.getCharacter_subclass());
+                    // String level = characterCardViewHolder.character_card_level.getText().toString();
+                    // level = level.substring(6, level.length() - 1);
+                    button_play.setTag(R.string.character_level, data.getCharacter_level());
                 }
             }
         });
-
-        /*final String character_name = characterCardViewHolder.character_card_name.getText().toString();
-
-        AlertDialog.Builder dialog_builder = new AlertDialog.Builder(context);
-        dialog_builder.setTitle("Delete character " + character_name);
-        dialog_builder.setMessage("Are you sure?");
-        dialog_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                database.collection("users")
-                        .document(user_id_token).collection("characters")
-                        .document(character_name).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-
-                        Toast.makeText(context,
-                                "Character " + character_name + " deleted successfully",
-                                Toast.LENGTH_SHORT).show();
-
-                        character_data.remove(position);
-                        notifyItemRemoved(position);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                        Toast.makeText(context, "Failed to delete character", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-        dialog_builder.setNegativeButton("No", null);
-        dialog_builder.show();*/
 
         if (data.getCharacter_class() == SWORDSMAN) {
 

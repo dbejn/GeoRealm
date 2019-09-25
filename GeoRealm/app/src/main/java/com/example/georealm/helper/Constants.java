@@ -2,6 +2,14 @@ package com.example.georealm.helper;
 
 public class Constants {
 
+    public static final String APP_UUID = "040229e1-b280-4db7-bcbf-7172eb63ce0d";
+
+    // BLUETOOTH
+    public static final int SOCKET_ACQUIRED = 0;
+    public static final int SOCKET_ACQUIRED_ERROR = 1;
+    public static final int CONFIRM_PASSWORD = 2;
+    public static final int CONFIRM_PASSWORD_ERROR = 3;
+
     // CLASSES & SUBCLASSES
     public static final int SWORDSMAN = 0;
     public static final int BERSERKER = 1;

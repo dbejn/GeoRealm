@@ -15,7 +15,7 @@ public class Icebound extends CharacterData {
     }
 
     public Icebound (String name) {
-        super(name, SORCERER, ICEBOUND, 95, 120, 25, 50, 70, 55);
+        super(name, SORCERER, ICEBOUND, 95, 120, 5, 37, 18, 42);
 
 
     }

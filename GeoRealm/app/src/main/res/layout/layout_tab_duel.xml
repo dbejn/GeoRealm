@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="25dp"
+    android:id="@+id/layout_duel"
+    android:visibility="gone">
+
+    <EditText
+        android:id="@+id/make_request_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="75dp"
+        android:layout_marginEnd="75dp"
+        android:hint="@string/password_optional"
+        android:gravity="center"
+        android:lines="1"
+        android:maxLength="16"
+        android:inputType="textPassword"/>
+
+    <Button
+        android:id="@+id/button_make_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/make_request_password"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="85dp"
+        android:layout_marginEnd="85dp"
+        android:text="@string/make_duel_request"
+        android:textColor="@color/colorBase"
+        android:background="@color/colorTint" />
+
+    <TextView
+        android:id="@+id/waiting_for_response"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/waiting_for_response"
+        app:layout_constraintTop_toBottomOf="@+id/button_make_request"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="5dp"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/or"
+        android:textStyle="italic|bold"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/button_make_request"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="65dp"/>
+
+    <EditText
+        android:id="@+id/accept_request_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/or"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="75dp"
+        android:layout_marginEnd="75dp"
+        android:hint="@string/password"
+        android:gravity="center"
+        android:lines="1"
+        android:maxLength="16"
+        android:inputType="textPassword"/>
+
+    <Button
+        android:id="@+id/button_accept_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/accept_request_password"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="85dp"
+        android:layout_marginEnd="85dp"
+        android:text="@string/accept_duel_request"
+        android:textColor="@color/colorBase"
+        android:background="@color/colorTint" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
